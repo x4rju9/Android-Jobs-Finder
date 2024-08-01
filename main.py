@@ -85,9 +85,6 @@ fuel_credit_card = [
 def main():
     with TelegramClient(StringSession(ss), api_id, api_hash) as client:
 
-        for each in fuel_credit_card:
-            entity = client.get_entity(each)
-    
         @client.on(events.NewMessage(chats = fuel_android))
         async def android_jobs(event):
             job = event.raw_text
