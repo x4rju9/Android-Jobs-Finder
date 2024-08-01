@@ -92,14 +92,32 @@ def main():
             if result:
                 await client.send_message('x4rju9', job, link_preview=False)
 
+        @client.on(events.NewMessage(chats = fuel_android))
+        async def full_stack_jobs(event):
+            job = event.raw_text
+
+            if "full stack" in job.lower():
+                await client.send_message(-1002236063557, job, link_preview=False)
+
         @client.on(events.NewMessage(chats = fuel_credit_card))
         async def cc_leecher(event):
             cc = event.raw_text
+            print(cc)
             result = isApprovedCreditCard(cc.lower())
     
             if result:
                 await client.send_message(-1001242921653, cc, link_preview=False)
-                await client.send_message(-1001860676833, cc, link_preview=False)
+                await client.send_message(-1001769821742, cc, link_preview=False)
+        
+        @client.on(events.MessageEdited(chats = fuel_credit_card))
+        async def cc_leecher_edited(event):
+            cc = event.raw_text
+            print(cc)
+            result = isApprovedCreditCard(cc.lower())
+    
+            if result:
+                await client.send_message(-1001242921653, cc, link_preview=False)
+                await client.send_message(-1001769821742, cc, link_preview=False)
 
         # start bot
         client.start()
