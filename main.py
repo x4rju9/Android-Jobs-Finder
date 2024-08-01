@@ -3,6 +3,7 @@ from telethon.sessions import StringSession
 from telethon import events
 from dotenv import load_dotenv
 from os import getenv
+from keep_alive import keep_alive
 
 # Credentials.
 api_id = int(getenv('API_ID'))
@@ -60,16 +61,21 @@ fuel = [
     'x4rju9'
 ]
 
-with TelegramClient(StringSession(ss), api_id, api_hash) as client:
-
-    @client.on(events.NewMessage(chats = fuel))
-    async def handler(event):
-        job = event.raw_text
-        result = isAndroidJob(job.lower())
-
-        if result:
-            await client.send_message('x4rju9', job, link_preview=False)
-
+def main():
+    with TelegramClient(StringSession(ss), api_id, api_hash) as client:
     
-    client.start()
-    client.run_until_disconnected()
+        @client.on(events.NewMessage(chats = fuel))
+        async def handler(event):
+            job = event.raw_text
+            result = isAndroidJob(job.lower())
+    
+            if result:
+                await client.send_message('x4rju9', job, link_preview=False)
+    
+        
+        client.start()
+        client.run_until_disconnected()
+
+if __name__ == "__main__":
+    keep_alive()
+    main()
