@@ -32,6 +32,8 @@ def getJobRole(job):
         return "android"
     elif "full stack" in job:
         return "full_stack"
+    elif "fullstack" in job:
+        return "full_stack"
     else:
         return "null"
     
