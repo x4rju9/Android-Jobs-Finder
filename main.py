@@ -1,14 +1,13 @@
 from telethon.sync import TelegramClient
 from telethon.sessions import StringSession
 from telethon import events
-from dotenv import load_dotenv
-from os import getenv
+import os
 from keep_alive import keep_alive
 
 # Credentials.
-api_id = int(getenv('API_ID'))
-api_hash = getenv('API_HASH')
-ss = getenv('STRING_SESSION')
+api_id = int(os.environ.get('API_ID'))
+api_hash = os.environ.get('API_HASH')
+ss = os.environ.get('STRING_SESSION')
 
 # Main
 
