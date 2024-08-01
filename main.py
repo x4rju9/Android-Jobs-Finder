@@ -38,8 +38,6 @@ def isAndroidJob(job):
 def isApprovedCreditCard(cc):
     if "approved" in cc:
         return True
-    elif "cvv" in cc:
-        return True
     elif "ccn" in cc:
         return True
     else:
@@ -79,6 +77,7 @@ fuel_credit_card = [
     -1001118293322,
     -1001185460808,
     -1001542531535,
+    -1001718470703,
     'x4rju9'
 ]
 
