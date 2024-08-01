@@ -1,58 +1,13 @@
 from telethon.sync import TelegramClient
 from telethon.sessions import StringSession
 from telethon import events
+from dotenv import load_dotenv
+from os import getenv
 
 # Credentials.
-api_id = ''
-api_hash = ''
-ss = ''
-apis = []
-
-try:
-    apiss = open('api.txt', 'r')
-    apis = apiss.readlines()
-    apiss.close()
-except:
-    apiss = open('api.txt', 'w')
-    apiss.close()
-    apiss = open('api.txt', 'r')
-    apis = apiss.readlines()
-    apiss.close()
-
-
-if apis == []:
-    print("Note: These Credentials will be saved for later use!")
-    print("You can delete 'api.txt' to login from different account.")
-    api_id = int(input("API ID: "))
-    api_hash = input("API HASH: ")
-
-    with TelegramClient(StringSession(), api_id, api_hash) as client:
-        ss = client.session.save()
-    api_id = int(str(api_id).replace(" ", ""))
-    api_hash = api_hash.replace(" ", "")
-    apiss = open('api.txt', 'w')
-    apiss.write(str(api_id)+"\n")
-    apiss.write(api_hash+'\n'+ss)
-    apiss.close()
-    system('cls')
-
-elif len(apis) == 2:
-    api_id = int(apis[0])
-    api_hash = apis[1]
-
-    with TelegramClient(StringSession(), api_id, api_hash) as client:
-        ss = client.session.save()
-    apiss = open('api.txt', 'a')
-    apiss.write(f'\n{ss}')
-    apiss.close()
-    system('cls')
-
-elif len(apis) == 3:
-    api_id = int(apis[0])
-    api_hash = apis[1]
-    ss = apis[2]
-
-
+api_id = int(getenv('API_ID'))
+api_hash = getenv('API_HASH')
+ss = getenv('STRING_SESSION')
 
 # Main
 
