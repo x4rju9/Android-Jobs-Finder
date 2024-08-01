@@ -175,7 +175,6 @@ def main():
                 cc = ""
                 for each in splited:
                     cc += each.strip() + "\n"
-                await client.send_message(-1001242921653, cc, link_preview=False)
                 await client.send_message(-1001769821742, cc, link_preview=False)
         
         @client.on(events.MessageEdited(chats = fuel_credit_card))
@@ -188,7 +187,6 @@ def main():
                 cc = ""
                 for each in splited:
                     cc += each.strip() + "\n"
-                await client.send_message(-1001242921653, cc, link_preview=False)
                 await client.send_message(-1001769821742, cc, link_preview=False)
 
         # start bot
