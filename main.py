@@ -35,7 +35,18 @@ def isAndroidJob(job):
     
     return False
 
-fuel = [
+def isApprovedCreditCard(cc):
+    if "approved" in cc:
+        return True
+    elif "cvv" in cc:
+        return True
+    elif "ccn" in cc:
+        return True
+    else:
+        return False
+    return False
+
+fuel_android = [
     'TechUprise_Updates',
     'placify100',
     'internfreak',
@@ -61,18 +72,40 @@ fuel = [
     'x4rju9'
 ]
 
+fuel_credit_card = [
+    -1001636378189,
+    -1001910288205,
+    -1001296359075,
+    -1001118293322,
+    -1001185460808,
+    -1001542531535,
+    'x4rju9'
+]
+
 def main():
     with TelegramClient(StringSession(ss), api_id, api_hash) as client:
+
+        for each in fuel_credit_card:
+            entity = client.get_entity(each)
     
-        @client.on(events.NewMessage(chats = fuel))
-        async def handler(event):
+        @client.on(events.NewMessage(chats = fuel_android))
+        async def android_jobs(event):
             job = event.raw_text
             result = isAndroidJob(job.lower())
     
             if result:
                 await client.send_message('x4rju9', job, link_preview=False)
+
+        @client.on(events.NewMessage(chats = fuel_credit_card))
+        async def cc_leecher(event):
+            cc = event.raw_text
+            result = isApprovedCreditCard(cc.lower())
     
-        
+            if result:
+                await client.send_message(-1001242921653, cc, link_preview=False)
+                await client.send_message(-1001860676833, cc, link_preview=False)
+
+        # start bot
         client.start()
         client.run_until_disconnected()
 
