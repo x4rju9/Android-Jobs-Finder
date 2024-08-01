@@ -142,10 +142,10 @@ def create_response(message):
     [✯] Spytube Checker  
     ━━━━━━━━━━━━━━━━
     [✯] CC ↯  {filter_cc(message)}
-    [✯] Status ↯  APPROVED{status}✅
+    [✯] Status ↯  APPROVED{status} ✅
     ━━━━━━━━━━━━━━━━
     [✯] Proxy  ↯  LIVE 🟩
-    [✯] Leeched by ↯  @xCatBurglar  [Premium]
+    [✯] Leeched by ↯  @xCatBurglar [Premium]
     [✯] Bot by ↯  @x4rju9"""
 
     return text_1
