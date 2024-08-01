@@ -81,6 +81,75 @@ fuel_credit_card = [
     'x4rju9'
 ]
 
+# Filter Credit Cards From Each Message.
+def filter_pattern(message):
+    import re
+    pattern1 = re.compile(r'(\b\d{16}\b)[a-zA-Z\W]*?(\b\d{2}\b)[a-zA-Z\W]*?(\b\d{2,4}\b)[a-zA-Z\W]*?(\b\d{3,4}\b)', re.DOTALL)
+    pattern2 = re.compile(r'(\b\d{16}\b)[a-zA-Z\W]*?(\b\d{3,4}\b)[a-zA-Z\W]*?(\b\d{2}\b)[a-zA-Z\W]*?(\b\d{2,4}\b)', re.DOTALL)
+    pattern3 = re.compile(r'(\b\d{4}\b).(\b\d{4}\b).(\b\d{4}\b).(\b\d{4}\b)[a-zA-Z\W]*?(\b\d{2}\b)[a-zA-Z\W]*?(\b\d{2,4}\b)[a-zA-Z\W]*?(\b\d{3,4}\b)', re.DOTALL)
+    pattern4 = re.compile(r'(\b\d{4}\b).(\b\d{4}\b).(\b\d{4}\b).(\b\d{4}\b)[a-zA-Z\W]*?(\b\d{3,4}\b)[a-zA-Z\W]*?(\b\d{2}\b)[a-zA-Z\W]*?(\b\d{2,4}\b)', re.DOTALL)
+    result = []
+    pattern = 1
+    result = pattern1.findall(message)
+    if result == []:
+        pattern = 2
+        result = pattern2.findall(message)
+        if result == []:
+            pattern = 3
+            pattern3.findall(message)
+            if result == []:
+                pattern = 4
+                pattern4.findall(message)
+    return result,pattern
+
+def filter_cc(cc):
+    matches, pattern = filter_pattern(cc)
+    cc, mm, yy, cvv = "","","",""
+    for match in matches:
+        if pattern == 1:
+            cc = match[0]
+            mm = match[1]
+            yy = match[2]
+            cvv = match[3]
+        elif pattern == 2:
+            cc = match[0]
+            mm = match[2]
+            yy = match[3]
+            cvv = match[1]
+        elif pattern == 3:
+            cc = ''.join(match[0:4])
+            mm = match[4]
+            yy = match[5]
+            cvv = match[6]
+        elif pattern == 4:
+            cc = ''.join(match[0:4])
+            mm = match[5]
+            yy = match[6]
+            cvv = match[4]
+        if len(yy) < 4:
+            yy = '20' + yy
+    return f"{cc}|{mm}|{yy}|{cvv}"
+
+def create_response(message):
+    status = ""
+
+    if "ccn" in message.lower():
+        status = " CCN"
+    elif "cvv" in message.lower():
+        status = " CVV"
+
+    text_1 = f"""
+    [✯] Spytube Checker  
+    ━━━━━━━━━━━━━━━━
+    [✯] CC ↯  {filter_cc(message)}
+    [✯] Status ↯  APPROVED{status}✅
+    ━━━━━━━━━━━━━━━━
+    [✯] Proxy  ↯  LIVE 🟩
+    [✯] Leeched by ↯  @x4rju9 [Premium]
+    [✯] Bot by ↯  @x4rju9"""
+
+    return text_1
+
 def main():
     with TelegramClient(StringSession(ss), api_id, api_hash) as client:
 
@@ -92,30 +161,29 @@ def main():
             if result:
                 await client.send_message('x4rju9', job, link_preview=False)
 
-        @client.on(events.NewMessage(chats = fuel_android))
-        async def full_stack_jobs(event):
-            job = event.raw_text
-
-            if "full stack" in job.lower():
-                await client.send_message(-1002236063557, job, link_preview=False)
-
         @client.on(events.NewMessage(chats = fuel_credit_card))
         async def cc_leecher(event):
             cc = event.raw_text
-            print(cc)
             result = isApprovedCreditCard(cc.lower())
     
             if result:
+                splited = create_response(cc).split("\n")
+                cc = ""
+                for each in splited:
+                    cc += each.strip() + "\n"
                 await client.send_message(-1001242921653, cc, link_preview=False)
                 await client.send_message(-1001769821742, cc, link_preview=False)
         
         @client.on(events.MessageEdited(chats = fuel_credit_card))
         async def cc_leecher_edited(event):
             cc = event.raw_text
-            print(cc)
             result = isApprovedCreditCard(cc.lower())
     
             if result:
+                splited = create_response(cc).split("\n")
+                cc = ""
+                for each in splited:
+                    cc += each.strip() + "\n"
                 await client.send_message(-1001242921653, cc, link_preview=False)
                 await client.send_message(-1001769821742, cc, link_preview=False)
 
