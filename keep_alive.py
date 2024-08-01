@@ -5,7 +5,7 @@ import time
 
 PORT = os.environ.get('PORT')
 start_time = time.time()
-bot = Flast(__name__)
+bot = Flask(__name__)
 
 @bot.route('/')
 def home():
