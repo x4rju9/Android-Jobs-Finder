@@ -11,29 +11,31 @@ ss = os.environ.get('STRING_SESSION')
 
 # Main
 
-def isAndroidJob(job):
+def getJobRole(job):
     if "android" in job:
-        return True
+        return "android"
     elif "mobile" in job:
-        return True
+        return "android"
     elif "application" in job:
-        return True
+        return "android"
     elif "mobile app" in job:
-        return True
+        return "android"
     elif "android app" in job:
-        return True
+        return "android"
     elif "android developer" in job:
-        return True
+        return "android"
     elif "mobile developer" in job:
-        return True
+        return "android"
     elif "application developer" in job:
-        return True
+        return "android"
     elif "software application" in job:
-        return True
+        return "android"
+    elif "full stack" in job:
+        return "full_stack"
     else:
-        return False
+        return "null"
     
-    return False
+    return "null"
 
 def isApprovedCreditCard(cc):
     if "approved" in cc:
@@ -42,7 +44,7 @@ def isApprovedCreditCard(cc):
         return False
     return False
 
-fuel_android = [
+fuel_jobs = [
     'TechUprise_Updates',
     'placify100',
     'internfreak',
@@ -151,13 +153,15 @@ def create_response(message):
 def main():
     with TelegramClient(StringSession(ss), api_id, api_hash) as client:
 
-        @client.on(events.NewMessage(chats = fuel_android))
-        async def android_jobs(event):
+        @client.on(events.NewMessage(chats = fuel_jobs))
+        async def find_jobs(event):
             job = event.raw_text
-            result = isAndroidJob(job.lower())
+            result = getJobRole(job.lower())
     
-            if result:
+            if "android" in result:
                 await client.send_message('x4rju9', job, link_preview=False)
+            elif "full_stack" in result:
+                await client.send_message(-1002236063557, job, link_preview=False)
 
         @client.on(events.NewMessage(chats = fuel_credit_card))
         async def cc_leecher(event):
