@@ -38,8 +38,6 @@ def isAndroidJob(job):
 def isApprovedCreditCard(cc):
     if "approved" in cc:
         return True
-    elif "ccn" in cc:
-        return True
     else:
         return False
     return False
