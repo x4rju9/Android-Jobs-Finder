@@ -145,7 +145,7 @@ def create_response(message):
     [✯] Status ↯  APPROVED{status}✅
     ━━━━━━━━━━━━━━━━
     [✯] Proxy  ↯  LIVE 🟩
-    [✯] Leeched by ↯  @x4rju9 [Premium]
+    [✯] Leeched by ↯  @xCatBurglar  [Premium]
     [✯] Bot by ↯  @x4rju9"""
 
     return text_1
