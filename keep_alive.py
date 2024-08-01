@@ -1,9 +1,10 @@
 from threading import Thread
 from flask import Flask
 from config import Port
+import os
 import time
 
-PORT = getenv('PORT')
+PORT = os.environ.get('PORT')
 start_time = time.time()
 bot = Flast(__name__)
 
