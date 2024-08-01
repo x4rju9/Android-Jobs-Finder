@@ -10,7 +10,7 @@ bot = Flask(__name__)
 @bot.route('/')
 def home():
   end_time = time.time()
-  uptime_secconds = end_time - start_time
+  uptime_seconds = end_time - start_time
   uptime_minutes = uptime_seconds / 60
   return f'Bot uptime: {uptime_minutes:.2f} minutes'
 
