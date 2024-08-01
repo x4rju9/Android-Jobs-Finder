@@ -1,6 +1,5 @@
 from threading import Thread
 from flask import Flask
-from config import Port
 import os
 import time
 
