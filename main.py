@@ -53,6 +53,8 @@ for job in jobs:
 	job = job.strip()
 	if '-' in job:
 		fuel_jobs.append(int(job))
+	elif '' == job:
+		pass
 	else:
 		fuel_jobs.append(job)
 
@@ -63,6 +65,8 @@ for c in cc:
 	c = c.strip()
 	if '-' in c:
 		fuel_credit_card.append(int(c))
+	elif '' == c:
+		pass
 	else:
 		fuel_credit_card.append(c)
 
