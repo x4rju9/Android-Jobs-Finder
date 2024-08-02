@@ -12,29 +12,31 @@ ss = os.environ.get("STRING_SESSION")
 
 # Main
 
+def fetchKeyword(keyword, job):
+    return len(findall(fr"\b{keyword}\b", job)) >= 1
 
 def getJobRole(job):
-    if "android" in job:
+    if fetchKeyword("android", job):
         return "android"
-    elif "mobile" in job:
+    elif fetchKeyword("mobile", job):
         return "android"
-    elif "application" in job:
+    elif fetchKeyword("application", job):
         return "android"
-    elif "mobile app" in job:
+    elif fetchKeyword("mobile app", job):
         return "android"
-    elif "android app" in job:
+    elif fetchKeyword("android app", job):
         return "android"
-    elif "android developer" in job:
+    elif fetchKeyword("android developer", job):
         return "android"
-    elif "mobile developer" in job:
+    elif fetchKeyword("mobile developer", job):
         return "android"
-    elif "application developer" in job:
+    elif fetchKeyword("application developer", job):
         return "android"
-    elif "software application" in job:
+    elif fetchKeyword("software application", job):
         return "android"
-    elif "full stack" in job:
+    elif fetchKeyword("full stack", job):
         return "full_stack"
-    elif "fullstack" in job:
+    elif fetchKeyword("fullstack", job):
         return "full_stack"
     else:
         return "null"
