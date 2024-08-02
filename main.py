@@ -48,7 +48,7 @@ def isApprovedCreditCard(cc):
 
 # Filter Jobs Channels
 fuel_jobs = []
-jobs = os.environ.get('JOBS')
+jobs = os.environ.get('JOBS').split(",")
 for job in jobs:
 	job = job.strip()
 	if '-' in job:
@@ -58,7 +58,7 @@ for job in jobs:
 
 # Filter CC Channels
 fuel_credit_card = []
-cc = os.environ.get('CC')
+cc = os.environ.get('CC').split(",")
 for c in cc:
 	c = c.strip()
 	if '-' in c:
