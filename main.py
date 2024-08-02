@@ -46,9 +46,25 @@ def isApprovedCreditCard(cc):
         return False
     return False
 
-fuel_jobs = os.environ.get('JOBS')
+# Filter Jobs Channels
+fuel_jobs = []
+jobs = os.environ.get('JOBS')
+for job in jobs:
+	job = job.strip()
+	if '-' in job:
+		fuel_jobs.append(int(job))
+	else:
+		fuel_jobs.append(job)
 
-fuel_credit_card = os.environ.get('CC')
+# Filter CC Channels
+fuel_credit_card = []
+cc = os.environ.get('CC')
+for c in cc:
+	c = c.strip()
+	if '-' in c:
+		fuel_credit_card.append(int(c))
+	else:
+		fuel_credit_card.append(c)
 
 # Filter Credit Cards From Each Message.
 def filter_pattern(message):
