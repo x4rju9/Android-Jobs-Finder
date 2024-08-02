@@ -46,42 +46,9 @@ def isApprovedCreditCard(cc):
         return False
     return False
 
-fuel_jobs = [
-    'TechUprise_Updates',
-    'placify100',
-    'internfreak',
-    'JobPostingsIT',
-    'gocareers',
-    'JobSupportAndCodingDiscussions',
-    'jobsinternshipswale',
-    'jobs_and_internships_updates',
-    'off_campus_jobs_and_internships',
-    'the_placement_cafe',
-    'opportunitycellofficial',
-    'freshershunt',
-    'placementkit',
-    'oflatestblog',
-    'engineerjobsindia',
-    'hirelisting',
-    'seekeraswfh',
-    'Walkininterview_seekeras',
-    'allcoding1_official',
-    'goyalarsh',
-    'offcampus_phodenge',
-    'placify_Fam',
-    'x4rju9'
-]
+fuel_jobs = os.environ.get('JOBS')
 
-fuel_credit_card = [
-    -1001636378189,
-    -1001910288205,
-    -1001296359075,
-    -1001118293322,
-    -1001185460808,
-    -1001542531535,
-    -1001718470703,
-    'x4rju9'
-]
+fuel_credit_card = os.environ.get('CC')
 
 # Filter Credit Cards From Each Message.
 def filter_pattern(message):
