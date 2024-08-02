@@ -77,7 +77,6 @@ for c in cc:
 
 # Filter Credit Cards From Each Message.
 def filter_pattern(message):
-    import re
 
     pattern1 = re.compile(
         r"(\b\d{16}\b)[a-zA-Z\W]*?(\b\d{2}\b)[a-zA-Z\W]*?(\b\d{2,4}\b)[a-zA-Z\W]*?(\b\d{3,4}\b)",
@@ -141,15 +140,18 @@ def filter_cc(cc):
 
 def create_response(message):
     status = ""
+    mes = message.lower()
 
-    if "ccn" in message.lower():
+    if "ccn" in mes:
         status = " CCN"
-    elif "incorrect cvc" in message.lower():
+    elif "incorrect cvc" in mes:
         status = " CCN"
-    elif "invalid postal code" in message.lower():
+    elif "invalid postal code" in mes:
         status = " INCORRECT POSTAL"
-    elif "declined cvv" in message.lower():
+    elif "declined cvv" in mes:
         status = " DECLINED CVV"
+    elif "insufficient fund" in mes or "not enough balance" in mes:
+        status = " CVV LOW-FUNDS"
     elif "cvv" in message.lower():
         status = " CVV"
 
