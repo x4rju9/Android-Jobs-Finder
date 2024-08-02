@@ -2,7 +2,7 @@ from telethon.sync import TelegramClient
 from telethon.sessions import StringSession
 from telethon import events
 import os
-from re import findall
+from re import findall, compile, DOTALL
 from keep_alive import keep_alive
 
 # Credentials.
@@ -80,21 +80,21 @@ for c in cc:
 # Filter Credit Cards From Each Message.
 def filter_pattern(message):
 
-    pattern1 = re.compile(
+    pattern1 = compile(
         r"(\b\d{16}\b)[a-zA-Z\W]*?(\b\d{2}\b)[a-zA-Z\W]*?(\b\d{2,4}\b)[a-zA-Z\W]*?(\b\d{3,4}\b)",
-        re.DOTALL,
+        DOTALL,
     )
-    pattern2 = re.compile(
+    pattern2 = compile(
         r"(\b\d{16}\b)[a-zA-Z\W]*?(\b\d{3,4}\b)[a-zA-Z\W]*?(\b\d{2}\b)[a-zA-Z\W]*?(\b\d{2,4}\b)",
-        re.DOTALL,
+        DOTALL,
     )
-    pattern3 = re.compile(
+    pattern3 = compile(
         r"(\b\d{4}\b).(\b\d{4}\b).(\b\d{4}\b).(\b\d{4}\b)[a-zA-Z\W]*?(\b\d{2}\b)[a-zA-Z\W]*?(\b\d{2,4}\b)[a-zA-Z\W]*?(\b\d{3,4}\b)",
-        re.DOTALL,
+        DOTALL,
     )
-    pattern4 = re.compile(
+    pattern4 = compile(
         r"(\b\d{4}\b).(\b\d{4}\b).(\b\d{4}\b).(\b\d{4}\b)[a-zA-Z\W]*?(\b\d{3,4}\b)[a-zA-Z\W]*?(\b\d{2}\b)[a-zA-Z\W]*?(\b\d{2,4}\b)",
-        re.DOTALL,
+        DOTALL,
     )
     result = []
     pattern = 1
