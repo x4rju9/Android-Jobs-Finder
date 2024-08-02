@@ -187,9 +187,6 @@ def main():
         @client.on(events.MessageEdited(chats=fuel_credit_card))
         async def cc_leecher(event):
             cc = event.raw_text
-            mes = cc.lower()
-            if "wait" in mes or "waiting" in mes or "loading" in mes:
-                return
             result = isApprovedCreditCard(cc.lower())
 
             if result:
