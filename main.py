@@ -124,11 +124,13 @@ def create_response(message):
 
     if "ccn" in message.lower():
         status = " CCN"
+    elif "incorrect cvc" in message.lower():
+	status = " CCN"
     elif "invalid postal code" in message.lower():
         status = " INCORRECT POSTAL"
     elif "declined cvv" in message.lower():
         status = " DECLINED CVV"
-    else:
+    elif "cvv" in message.lower():
         status = " CVV"
 
     text_1 = f"""
@@ -157,20 +159,12 @@ def main():
                 await client.send_message(-1002236063557, job, link_preview=False)
 
         @client.on(events.NewMessage(chats = fuel_credit_card))
+	@client.on(events.MessageEdited(chats = fuel_credit_card))
         async def cc_leecher(event):
             cc = event.raw_text
-            result = isApprovedCreditCard(cc.lower())
-    
-            if result:
-                splited = create_response(cc).split("\n")
-                cc = ""
-                for each in splited:
-                    cc += each.strip() + "\n"
-                await client.send_message(-1001769821742, cc, link_preview=False)
-        
-        @client.on(events.MessageEdited(chats = fuel_credit_card))
-        async def cc_leecher_edited(event):
-            cc = event.raw_text
+	    mes = cc.lower()
+	    if "wait" in mes or "waiting" in mes or "loading" in mes:
+	        return
             result = isApprovedCreditCard(cc.lower())
     
             if result:
