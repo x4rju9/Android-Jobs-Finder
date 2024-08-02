@@ -2,6 +2,7 @@ from telethon.sync import TelegramClient
 from telethon.sessions import StringSession
 from telethon import events
 import os
+from re import findall
 from keep_alive import keep_alive
 
 # Credentials.
@@ -40,7 +41,8 @@ def getJobRole(job):
     return "null"
 
 def isApprovedCreditCard(cc):
-    if "approved" in cc:
+    result = findall(r"\bapproved\b", cc)
+    if len(result) >= 1:
         return True
     else:
         return False
