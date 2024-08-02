@@ -124,7 +124,11 @@ def create_response(message):
 
     if "ccn" in message.lower():
         status = " CCN"
-    elif "cvv" in message.lower():
+    elif "invalid postal code" in message.lower():
+        status = " INCORRECT POSTAL"
+    elif "declined cvv" in message.lower():
+        status = " DECLINED CVV"
+    else:
         status = " CVV"
 
     text_1 = f"""
