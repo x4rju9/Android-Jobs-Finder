@@ -12,10 +12,7 @@ def home():
   end_time = time.time()
   uptime_seconds = end_time - start_time
   uptime_minutes = uptime_seconds / 60
-  response = f"Bot uptime: {uptime_minutes:.2f} minutes"
-  response += f"\n\nLeeching Jobs from sources listed below:\n{os.environ.get('JOBS')}"
-  response += f"\n\nLeeching Credit Cards from sources listed below:\n{os.environ.get('CC')}"
-  return response
+  return f"Bot uptime: {uptime_minutes:.2f} minutes"
 
 def run():
   bot.run(host = '0.0.0.0', port = PORT)
