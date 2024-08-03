@@ -150,21 +150,29 @@ def filter_cc(cc):
 
 
 def create_response(message):
-    status = ""
+    status = "APPROVED"
     mes = message.lower()
 
     if "ccn" in mes:
-        status = " CCN"
+        status = += " CCN"
+    elif len(findall(r"(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b).(\b\d{1,2}\b)", cc)) >= 1:
+        status = "CHARGED CC"
+    elif len(findall(r"(\bcharged\b).(\b\d{1,2}\b)", cc)) >= 1:
+        status = "CHARGED CC"
+    elif len(findall(r"(\b\d{1,2}\b).(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b)", cc)) >= 1:
+        status = "CHARGED CC"
+    elif len(findall(r"(\b\d{1,2}\b).(\bcharged\b)", cc)) >= 1:
+        status = "CHARGED CC"
     elif "incorrect cvc" in mes:
-        status = " CCN"
+        status = += " CCN"
     elif "invalid postal code" in mes:
-        status = " INCORRECT POSTAL"
+        status = += " INCORRECT POSTAL"
     elif "declined cvv" in mes:
-        status = " DECLINED CVV"
+        status = += " DECLINED CVV"
     elif "insufficient fund" in mes or "not enough balance" in mes:
-        status = " CVV LOW-FUNDS"
+        status = += " CVV LOW-FUNDS"
     elif "cvv" in message.lower():
-        status = " CVV"
+        status = += " CVV"
 
     credit_card = filter_cc(message)
     if len(credit_card) <= 3:
@@ -174,7 +182,7 @@ def create_response(message):
     [✯] Spytube Checker  
     ━━━━━━━━━━━━━━━━
     [✯] CC ↯  {credit_card}
-    [✯] Status ↯  APPROVED{status} ✅
+    [✯] Status ↯  {status} ✅
     ━━━━━━━━━━━━━━━━
     [✯] Proxy  ↯  LIVE 🟩
     [✯] Leeched by ↯  @xCatBurglar [Premium]
