@@ -186,7 +186,7 @@ def create_response(message):
     elif "declined cvv" in mes:
         status += " DECLINED CVV"
     elif "insufficient fund" in mes or "not enough balance" in mes:
-        status += " CVV LOW-FUNDS"
+        status = "CVV LOW FUNDS"
     elif "cvv" in message.lower():
         status += " CVV"
 
