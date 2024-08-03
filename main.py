@@ -157,10 +157,14 @@ def create_response(message):
     elif "cvv" in message.lower():
         status = " CVV"
 
+    credit_card = filter_cc(message)
+    if len(credit_card) <= 3:
+        return "null"
+
     text_1 = f"""
     [✯] Spytube Checker  
     ━━━━━━━━━━━━━━━━
-    [✯] CC ↯  {filter_cc(message)}
+    [✯] CC ↯  {credit_card}
     [✯] Status ↯  APPROVED{status} ✅
     ━━━━━━━━━━━━━━━━
     [✯] Proxy  ↯  LIVE 🟩
@@ -190,7 +194,10 @@ def main():
             result = isApprovedCreditCard(cc.lower())
 
             if result:
-                splited = create_response(cc).split("\n")
+                response = create_response(cc)
+                if response == "null":
+                    return
+                splited = response.split("\n")
                 cc = ""
                 for each in splited:
                     cc += each.strip() + "\n"
