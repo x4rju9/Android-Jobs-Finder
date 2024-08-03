@@ -53,6 +53,14 @@ def isApprovedCreditCard(cc):
         return True
     elif len(findall(r"(\b\d{1,2}\b).(\bcharged\b)", cc)) >= 1:
         return True
+    elif len(findall(r"(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b).(\b\d{1,2}\b)\$", cc)) >= 1:
+        return True
+    elif len(findall(r"(\bcharged\b).(\b\d{1,2}\b)\$", cc)) >= 1:
+        return True
+    elif len(findall(r"(\b\d{1,2}\b)\$.(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b)", cc)) >= 1:
+        return True
+    elif len(findall(r"(\b\d{1,2}\b)\$.(\bcharged\b)", cc)) >= 1:
+        return True
     elif fetchKeyword("𝗔𝗽𝗽𝗿𝗼𝘃𝗲𝗱", cc):
         return True
     elif fetchKeyword("approved", cc):
@@ -162,6 +170,14 @@ def create_response(message):
     elif len(findall(r"(\b\d{1,2}\b).(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b)", mes)) >= 1:
         status = "CHARGED CVV"
     elif len(findall(r"(\b\d{1,2}\b).(\bcharged\b)", mes)) >= 1:
+        status = "CHARGED CVV"
+    elif len(findall(r"(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b).(\b\d{1,2}\b)\$", mes)) >= 1:
+        status = "CHARGED CVV"
+    elif len(findall(r"(\bcharged\b).(\b\d{1,2}\b)\$", mes)) >= 1:
+        status = "CHARGED CVV"
+    elif len(findall(r"(\b\d{1,2}\b)\$.(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b)", mes)) >= 1:
+        status = "CHARGED CVV"
+    elif len(findall(r"(\b\d{1,2}\b)\$.(\bcharged\b)", mes)) >= 1:
         status = "CHARGED CVV"
     elif "incorrect cvc" in mes:
         status += " CCN"
