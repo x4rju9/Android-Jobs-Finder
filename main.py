@@ -155,13 +155,13 @@ def create_response(message):
 
     if "ccn" in mes:
         status += " CCN"
-    elif len(findall(r"(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b).(\b\d{1,2}\b)", cc)) >= 1:
+    elif len(findall(r"(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b).(\b\d{1,2}\b)", mes)) >= 1:
         status = "CHARGED CC"
-    elif len(findall(r"(\bcharged\b).(\b\d{1,2}\b)", cc)) >= 1:
+    elif len(findall(r"(\bcharged\b).(\b\d{1,2}\b)", mes)) >= 1:
         status = "CHARGED CC"
-    elif len(findall(r"(\b\d{1,2}\b).(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b)", cc)) >= 1:
+    elif len(findall(r"(\b\d{1,2}\b).(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b)", mes)) >= 1:
         status = "CHARGED CC"
-    elif len(findall(r"(\b\d{1,2}\b).(\bcharged\b)", cc)) >= 1:
+    elif len(findall(r"(\b\d{1,2}\b).(\bcharged\b)", mes)) >= 1:
         status = "CHARGED CC"
     elif "incorrect cvc" in mes:
         status += " CCN"
