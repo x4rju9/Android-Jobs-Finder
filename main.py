@@ -156,17 +156,17 @@ def create_response(message):
     if "ccn" in mes:
         status += " CCN"
     elif len(findall(r"(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b).(\b\d{1,2}\b)", mes)) >= 1:
-        status = "CHARGED CC"
+        status = "CHARGED CVV"
     elif len(findall(r"(\bcharged\b).(\b\d{1,2}\b)", mes)) >= 1:
-        status = "CHARGED CC"
+        status = "CHARGED CVV"
     elif len(findall(r"(\b\d{1,2}\b).(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b)", mes)) >= 1:
-        status = "CHARGED CC"
+        status = "CHARGED CVV"
     elif len(findall(r"(\b\d{1,2}\b).(\bcharged\b)", mes)) >= 1:
-        status = "CHARGED CC"
+        status = "CHARGED CVV"
     elif "incorrect cvc" in mes:
         status += " CCN"
     elif "invalid postal code" in mes:
-        status += " INCORRECT POSTAL"
+        status += " WRONG ZIP"
     elif "declined cvv" in mes:
         status += " DECLINED CVV"
     elif "insufficient fund" in mes or "not enough balance" in mes:
