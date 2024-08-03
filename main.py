@@ -12,8 +12,8 @@ ss = os.environ.get("STRING_SESSION")
 
 # Main
 
-def fetchKeyword(keyword, job):
-    return len(findall(fr"\b{keyword}\b", job)) >= 1
+def fetchKeyword(keyword, source):
+    return len(findall(fr"\b{keyword}\b", source)) >= 1
 
 def getJobRole(job):
     if fetchKeyword("android", job):
@@ -45,8 +45,17 @@ def getJobRole(job):
 
 
 def isApprovedCreditCard(cc):
-    result = findall(r"\bapproved\b", cc)
-    if len(result) >= 1:
+    if len(findall(r"(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b).(\b\d{1,2}\b)", cc)) >= 1:
+        return True
+    elif len(findall(r"(\bcharged\b).(\b\d{1,2}\b)", cc)) >= 1:
+        return True
+    elif len(findall(r"(\b\d{1,2}\b).(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b)", cc)) >= 1:
+        return True
+    elif len(findall(r"(\b\d{1,2}\b).(\bcharged\b)", cc)) >= 1:
+        return True
+    elif fetchKeyword("𝗔𝗽𝗽𝗿𝗼𝘃𝗲𝗱", cc):
+        return True
+    elif fetchKeyword("approved", cc):
         return True
     else:
         return False
