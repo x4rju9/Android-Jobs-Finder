@@ -12,8 +12,10 @@ ss = os.environ.get("STRING_SESSION")
 
 # Main
 
+
 def fetchKeyword(keyword, source):
-    return len(findall(fr"\b{keyword}\b", source)) >= 1
+    return len(findall(rf"\b{keyword}\b", source)) >= 1
+
 
 def getJobRole(job):
     if fetchKeyword("android", job):
@@ -157,36 +159,50 @@ def filter_cc(cc):
     return f"{cc}|{mm}|{yy}|{cvv}"
 
 
+def format_numbers(cc):
+    s_chars = "𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿𝟶"
+    chars = "1234567890"
+    new_cc = ""
+    for x in cc:
+        if not x == "|":
+            index = chars.index(x)
+            print(index)
+            new_cc += s_chars[index]
+        else:
+            new_cc += "|"
+    return new_cc
+
+
 def create_response(message):
-    status = "APPROVED"
+    status = "ᴀᴘᴘʀᴏᴠᴇᴅ"
     mes = message.lower()
 
     if "ccn" in mes:
-        status += " CCN"
+        status += " ᴄᴄɴ"
     elif len(findall(r"(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b).(\b\d{1,2}\b)", mes)) >= 1:
-        status = "CHARGED CVV"
+        status = "ᴄʜᴀʀɢᴇᴅ ᴄᴠᴠ"
     elif len(findall(r"(\bcharged\b).(\b\d{1,2}\b)", mes)) >= 1:
-        status = "CHARGED CVV"
+        status = "ᴄʜᴀʀɢᴇᴅ ᴄᴠᴠ"
     elif len(findall(r"(\b\d{1,2}\b).(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b)", mes)) >= 1:
-        status = "CHARGED CVV"
+        status = "ᴄʜᴀʀɢᴇᴅ ᴄᴠᴠ"
     elif len(findall(r"(\b\d{1,2}\b).(\bcharged\b)", mes)) >= 1:
-        status = "CHARGED CVV"
+        status = "ᴄʜᴀʀɢᴇᴅ ᴄᴠᴠ"
     elif len(findall(r"(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b).(\b\d{1,2}\b)\$", mes)) >= 1:
-        status = "CHARGED CVV"
+        status = "ᴄʜᴀʀɢᴇᴅ ᴄᴠᴠ"
     elif len(findall(r"(\bcharged\b).(\b\d{1,2}\b)\$", mes)) >= 1:
-        status = "CHARGED CVV"
+        status = "ᴄʜᴀʀɢᴇᴅ ᴄᴠᴠ"
     elif len(findall(r"(\b\d{1,2}\b)\$.(\b𝗖𝗵𝗮𝗿𝗴𝗲𝗱\b)", mes)) >= 1:
-        status = "CHARGED CVV"
+        status = "ᴄʜᴀʀɢᴇᴅ ᴄᴠᴠ"
     elif len(findall(r"(\b\d{1,2}\b)\$.(\bcharged\b)", mes)) >= 1:
-        status = "CHARGED CVV"
+        status = "ᴄʜᴀʀɢᴇᴅ ᴄᴠᴠ"
     elif "incorrect cvc" in mes:
-        status += " CCN"
+        status += " ᴄᴄɴ"
     elif "invalid postal code" in mes:
-        status += " WRONG ZIP"
+        status += " ᴡʀᴏɴɢ ᴢɪᴘ"
     elif "declined cvv" in mes:
-        status += " DECLINED CVV"
+        status += " ᴄᴄɴ"
     elif "insufficient fund" in mes or "not enough balance" in mes:
-        status = "CVV LOW FUNDS"
+        status = "ɪɴꜱᴜꜰꜰɪᴄɪᴇɴᴛ ꜰᴜɴᴅꜱ"
     elif "cvv" in message.lower():
         status += " CVV"
 
@@ -194,15 +210,18 @@ def create_response(message):
     if len(credit_card) <= 3:
         return "null"
 
+    credit_card = format_numbers(credit_card).split("|")
     text_1 = f"""
-    [✯] Spytube Checker  
+    [✯] 𝗦𝗣𝗬𝗧𝗨𝗕𝗘 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
     ━━━━━━━━━━━━━━━━
-    [✯] CC ↯  {credit_card}
-    [✯] Status ↯  {status} ✅
+    [✯] ᴄᴄ ↯ <code>{credit_card[0]}</code>
+    [✯] ᴇxᴘɪʀʏ ↯ <code>{credit_card[1]}</code>/{credit_card[2]}</code>
+    [✯] ᴄᴠᴄ ↯ <code>{credit_card[3]}</code>
+    [✯] ʀᴇꜱᴘᴏɴꜱᴇ ↯ {status} ✅
     ━━━━━━━━━━━━━━━━
-    [✯] Proxy  ↯  LIVE 🟩
-    [✯] Leeched by ↯  @xCatBurglar [Premium]
-    [✯] Bot by ↯  @x4rju9"""
+    [✯] ᴘʀᴏxʏ ↯ ʟɪᴠᴇ ☘️
+    [✯] ʟᴇᴇᴄʜᴇᴅ ʙʏ ↯ <code>@xCatBurglar</code> [𝙿𝚁𝙴𝙼𝙸𝚄𝙼]
+    [✯] ᴅᴇᴠᴇʟᴏᴘᴇʀ ↯ <code>@x4rju9</code> ⚜️"""
 
     return text_1
 
