@@ -204,7 +204,7 @@ def create_response(message):
     elif "insufficient fund" in mes or "not enough balance" in mes:
         status = "ɪɴꜱᴜꜰꜰɪᴄɪᴇɴᴛ ꜰᴜɴᴅꜱ"
     elif "cvv" in message.lower():
-        status += " CVV"
+        status += " ᴄᴠᴠ"
 
     credit_card = filter_cc(message)
     if len(credit_card) <= 3:
@@ -214,14 +214,14 @@ def create_response(message):
     text_1 = f"""
     [✯] 𝗦𝗣𝗬𝗧𝗨𝗕𝗘 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
     ━━━━━━━━━━━━━━━━
-    [✯] ᴄᴄ ↯ {credit_card[0]}
-    [✯] ᴇxᴘɪʀʏ ↯ {credit_card[1]}/{credit_card[2]}
-    [✯] ᴄᴠᴄ ↯ {credit_card[3]}
-    [✯] ʀᴇꜱᴘᴏɴꜱᴇ ↯ {status} ✅
+    [✯] **ᴄᴄ** ↯ `{credit_card[0]}`
+    [✯] **ᴇxᴘɪʀʏ** ↯ `{credit_card[1]}`/`{credit_card[2]}`
+    [✯] **ᴄᴠᴄ** ↯ `{credit_card[3]}`
+    [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ {status} ✅
     ━━━━━━━━━━━━━━━━
-    [✯] ᴘʀᴏxʏ ↯ ʟɪᴠᴇ ☘️
-    [✯] ʟᴇᴇᴄʜᴇᴅ ʙʏ ↯ [@xCatBurglar](t.me/xCatBurglar) [𝙿𝚁𝙴𝙼𝙸𝚄𝙼]
-    [✯] ᴅᴇᴠᴇʟᴏᴘᴇʀ ↯ [@x4rju9](t.me/x4rju9) ⚜️"""
+    [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+    [✯] **ʟᴇᴇᴄʜᴇᴅ ʙʏ** ↯ [@xCatBurglar](t.me/xCatBurglar) [𝙿𝚁𝙴𝙼𝙸𝚄𝙼]
+    [✯] **ᴅᴇᴠᴇʟᴏᴘᴇʀ** ↯ [@x4rju9](t.me/x4rju9) ⚜️"""
 
     return text_1
 
