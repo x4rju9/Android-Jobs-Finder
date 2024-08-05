@@ -159,20 +159,6 @@ def filter_cc(cc):
     return f"{cc}|{mm}|{yy}|{cvv}"
 
 
-def format_numbers(cc):
-    s_chars = "𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿𝟶"
-    chars = "1234567890"
-    new_cc = ""
-    for x in cc:
-        if not x == "|":
-            index = chars.index(x)
-            print(index)
-            new_cc += s_chars[index]
-        else:
-            new_cc += "|"
-    return new_cc
-
-
 def create_response(message):
     status = "ᴀᴘᴘʀᴏᴠᴇᴅ"
     mes = message.lower()
@@ -210,18 +196,18 @@ def create_response(message):
     if len(credit_card) <= 3:
         return "null"
 
-    credit_card = format_numbers(credit_card).split("|")
+    credit_card = credit_card.split("|")
     text_1 = f"""
     [✯] 𝗦𝗣𝗬𝗧𝗨𝗕𝗘 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
     ━━━━━━━━━━━━━━━━
     [✯] **ᴄᴄ** ↯ `{credit_card[0]}`
-    [✯] **ᴇxᴘɪʀʏ** ↯ `{credit_card[1]}`/`{credit_card[2]}`
+    [✯] **ᴇxᴘɪʀʏ** ↯ `{credit_card[1]}/{credit_card[2]}`
     [✯] **ᴄᴠᴄ** ↯ `{credit_card[3]}`
     [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ {status} ✅
     ━━━━━━━━━━━━━━━━
     [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
-    [✯] **ʟᴇᴇᴄʜᴇᴅ ʙʏ** ↯ [@xCatBurglar](t.me/xCatBurglar) [𝙿𝚁𝙴𝙼𝙸𝚄𝙼]
-    [✯] **ᴅᴇᴠᴇʟᴏᴘᴇʀ** ↯ [@x4rju9](t.me/x4rju9) ⚜️"""
+    [✯] **ʟᴇᴇᴄʜᴇᴅ ʙʏ** ↯ @xCatBurglar [𝙿𝚁𝙴𝙼𝙸𝚄𝙼]
+    [✯] **ᴅᴇᴠᴇʟᴏᴘᴇʀ** ↯ @x4rju9 ⚜️"""
 
     return text_1
 
