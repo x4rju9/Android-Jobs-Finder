@@ -269,7 +269,9 @@ def main():
             # Password security: whether to hide or not
             uPass = result[1]
             if not event.is_private:
-                uPass = 'x'*len(uPass)
+                oLenght = len(uPass)
+                length = oLenght//2
+                uPass = uPass[0:length] + 'X'*(oLenght-length)
             # Response of whether the credentials are valid or invalid
             status = "ᴄʀᴇᴅᴇɴᴛɪᴀʟꜱ ᴍɪꜱᴍᴀᴛᴄʜ ‼"
             if "premium" in response.text:
