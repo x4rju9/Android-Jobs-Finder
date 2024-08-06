@@ -91,6 +91,7 @@ def filter_env(list):
             pass
         else:
             final.append(x)
+    return final
 
 # Filter Jobs Channels
 fuel_jobs = filter_env(os.environ.get("JOBS_SOURCE").split(","))
