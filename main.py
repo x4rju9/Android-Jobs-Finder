@@ -287,7 +287,7 @@ def main():
                     status = "ꜰʀᴇᴇ ᴀᴄᴄᴏᴜɴᴛ ✅"
                 # Creating Response Format
                 uEmail = result[0]
-                if len(uEmail) > 22:
+                if len(uEmail) > 25:
                     uEmail = f"\n{uEmail}"
                 if len(uPass) > 22:
                     uPass = f"\n{uPass}"
