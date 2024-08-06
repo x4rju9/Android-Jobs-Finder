@@ -246,7 +246,6 @@ def main():
 
         @client.on(events.NewMessage(pattern=r"^(?:@xCatBurglar /crunchy|/crunchy)"))
         async def handler(event):
-            print(event.raw_text)
             result = findall(r"([a-zA-Z0-9_\-\.]+@.*)\:(.*)", event.raw_text)
             if not len(result) >= 1:
                 return
