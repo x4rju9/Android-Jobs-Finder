@@ -1,6 +1,7 @@
 from telethon.sync import TelegramClient
 from telethon.sessions import StringSession
 from telethon import events
+import requests
 import os
 from re import findall, compile, DOTALL
 from keep_alive import keep_alive
