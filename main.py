@@ -315,7 +315,7 @@ def main():
                 [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `{status}`
                 ━━━━━━━━━━━━━━━━
                 [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
-                [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{memebership}]
+                [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
                 [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
                 res = formatMessage(res)
                 await event.reply(res)
