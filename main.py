@@ -286,6 +286,11 @@ def main():
                 elif "good" in response.text:
                     status = "ꜰʀᴇᴇ ᴀᴄᴄᴏᴜɴᴛ ✅"
                 # Creating Response Format
+                uEmail = result[0]
+                if len(uEmail) > 20:
+                    uEmail = f"\n{uEmail}"
+                if len(uPass) > 20:
+                    uPass = f"\n{uPass}"
                 res = f"""
                 [✯] 𝗖𝗥𝗨𝗡𝗖𝗛𝗬𝗥𝗢𝗟𝗟 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
                 ━━━━━━━━━━━━━━━━
