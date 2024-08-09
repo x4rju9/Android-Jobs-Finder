@@ -108,7 +108,7 @@ ACCESS_KEY = os.environ.get("ACCESS_KEY").strip()
 
 # Gemini Access Key
 GEMINI_ACCESS_KEY = os.environ.get("GEMINI_KEY").strip()
-gemini.configure(GEMINI_ACCESS_KEY)
+gemini.configure(api_key=GEMINI_ACCESS_KEY)
 model = gemini.GenerativeModel('gemini-pro')
 
 # Filter Credit Cards From Each Message.
