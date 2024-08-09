@@ -329,10 +329,9 @@ def main():
                 await event.reply(res)
 
 
-        gemini_question_pattern = r"^/google "
+        gemini_question_pattern = r"^/kulfi "
         @client.on(events.NewMessage(pattern=gemini_question_pattern))
         async def gemini_chat(event):
-            print("Triggered")
             # Getting user info
             user = await event.get_sender()
             user = user.username
