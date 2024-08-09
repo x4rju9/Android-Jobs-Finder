@@ -302,20 +302,20 @@ def main():
                 # Response of whether the credentials are valid or invalid
                 # Password security: whether to hide or not
                 status = "ᴄʀᴇᴅᴇɴᴛɪᴀʟꜱ ᴍɪꜱᴍᴀᴛᴄʜ ‼"
+                if len(uPass) > 20:
+                    uPass = uPass[0:20]
                 if "premium" in response.text:
                     status = "ᴀᴘᴘʀᴏᴠᴇᴅ ᴘʀᴇᴍɪᴜᴍ ✅"
                     if not event.is_private:
-                        oLenght = len(uPass)
-                        length = oLenght // 2
+                        oLength = len(uPass)
+                        length = oLength // 2
                         track = []
                         for x in range(length):
-                            i = randint(0, oLenght-1)
+                            i = randint(0, oLength-1)
                             while i in track:
                                 i = randint(0, oLength-1)
                             track.append(i)
                             uPass = uPass[0:i] + "X" + uPass[i+1:]
-                        if len(uPass) > 20:
-                            uPass = uPass[0:20]
                 elif "good" in response.text:
                     status = "ꜰʀᴇᴇ ᴀᴄᴄᴏᴜɴᴛ ✅"
                 # Creating Response Format
