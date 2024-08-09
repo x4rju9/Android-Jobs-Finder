@@ -329,7 +329,7 @@ def main():
                 await event.reply(res)
 
 
-        gemini_question_pattern = r"^/kulfi "
+        gemini_question_pattern = r"^(?:/google|/kulfi) "
         @client.on(events.NewMessage(pattern=gemini_question_pattern))
         async def gemini_chat(event):
             # Getting user info
