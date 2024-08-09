@@ -337,15 +337,27 @@ def main():
                 res = formatMessage(res)
                 await event.reply(res)
 
-
-        gemini_question_pattern = r"^(?:/google|/kulfi) "
+        gemini_question_pattern = r"^(?:/google|/kulfi)"
         @client.on(events.NewMessage(pattern=gemini_question_pattern))
         async def gemini_chat(event):
             # Getting user info
             user = await event.get_sender()
             user = user.username
             # Extracting question
-            question = sub(gemini_question_pattern, "", event.raw_text)
+            question = sub(gemini_question_pattern, "", event.raw_text).strip()
+            if "" == question or len(question) <= 1:
+                res = f"""
+                [✯] 𝗦𝗣𝗬𝗧𝗨𝗕𝗘 ⚡ 𝗔𝗜
+                ━━━━━━━━━━━━━━━━
+                **NO QUESTION FOUND**
+                **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ @{user} is the dumbest person on internet.
+                ━━━━━━━━━━━━━━━━
+                [✯] **ᴀᴘɪ** ↯ ʟɪᴠᴇ ☘️
+                [✯] **ᴀꜱᴋᴇᴅ ʙʏ** ↯ @{user}
+                [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                res = formatMessage(res)
+                await event.reply(res)
+                return
             # Generating answer
             answer = model.generate_content(question)
 
