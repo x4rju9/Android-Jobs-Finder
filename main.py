@@ -3,6 +3,7 @@ from telethon.sessions import StringSession
 from telethon import events
 import requests
 import os
+from random import randint
 from re import sub, findall, compile, DOTALL
 import google.generativeai as gemini
 from keep_alive import keep_alive
@@ -305,7 +306,13 @@ def main():
                     if not event.is_private:
                         oLenght = len(uPass)
                         length = oLenght // 2
-                        uPass = uPass[0:length] + "X" * (oLenght - length)
+                        track = []
+                        for x in range(length):
+                            i = randint(0, oLenght-1)
+                            while i in track:
+                                i = randint(0, oLength-1)
+                            track.append(i)
+                            uPass = uPass[0:i] + "X" + uPass[i+1:]
                         if len(uPass) > 20:
                             uPass = uPass[0:20]
                 elif "good" in response.text:
