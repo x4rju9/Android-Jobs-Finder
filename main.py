@@ -3,7 +3,7 @@ from telethon.sessions import StringSession
 from telethon import events
 import requests
 import os
-from re import findall, compile, DOTALL
+from re import sub, findall, compile, DOTALL
 import google.generativeai as gemini
 from keep_alive import keep_alive
 
@@ -110,6 +110,7 @@ ACCESS_KEY = os.environ.get("ACCESS_KEY").strip()
 GEMINI_ACCESS_KEY = os.environ.get("GEMINI_KEY").strip()
 gemini.configure(api_key=GEMINI_ACCESS_KEY)
 model = gemini.GenerativeModel('gemini-pro')
+model.generate_content("Hello There!")
 
 # Filter Credit Cards From Each Message.
 def filter_pattern(message):
@@ -331,35 +332,28 @@ def main():
         gemini_question_pattern = r"^/google "
         @client.on(events.NewMessage(pattern=gemini_question_pattern))
         async def gemini_chat(event):
-            special = "𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉"
-            original = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            print("Triggered")
             # Getting user info
-            user = await event.get_sender().username
+            user = await event.get_sender()
+            user = user.username
             # Extracting question
-            question = findall(gemini_question_pattern, event.raw_text)
+            question = sub(gemini_question_pattern, "", event.raw_text)
             # Generating answer
             answer = model.generate_content(question)
-            # Beautifying question
-            result = ""
-            for x in question:
-                if x in original:
-                    result += special[original.index(x)]
-                else:
-                    result += x
-            
 
             res = f"""
             [✯] 𝗦𝗣𝗬𝗧𝗨𝗕𝗘 ⚡ 𝗔𝗜
             ━━━━━━━━━━━━━━━━
-            [✯] **{result}**
-            [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ {answer}
+            **{question.upper()}**
+            **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ {answer.text}
             ━━━━━━━━━━━━━━━━
             [✯] **ᴀᴘɪ** ↯ ʟɪᴠᴇ ☘️
             [✯] **ᴀꜱᴋᴇᴅ ʙʏ** ↯ @{user}
             [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
-
             res = formatMessage(res)
             await event.reply(res)
+
+        
 
         # start bot
         client.start()
