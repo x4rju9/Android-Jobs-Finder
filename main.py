@@ -288,6 +288,7 @@ def main():
                     ━━━━━━━━━━━━━━━━
                     [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
                     [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                    [✯] **ᴀᴘɪ ʙʏ** ↯ @hellrip
                     [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
                     res = formatMessage(res)
                     await event.reply(res)
@@ -331,6 +332,7 @@ def main():
                 ━━━━━━━━━━━━━━━━
                 [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
                 [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                [✯] **ᴀᴘɪ ʙʏ** ↯ @hellrip
                 [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
                 res = formatMessage(res)
                 await event.reply(res)
