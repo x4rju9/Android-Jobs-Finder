@@ -286,7 +286,7 @@ def main():
             if not len(results) >= 1:
                 return
             
-            if not len(results) >= 1:
+            if not len(results) >= 1 or "/crunchy" == event.text:
                 if not event.reply_to:
                     res = f"""
                     [✯] 𝗖𝗥𝗨𝗡𝗖𝗛𝗬𝗥𝗢𝗟𝗟 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
@@ -423,7 +423,7 @@ def main():
             if not len(results) >= 1:
                 return
             
-            if not len(results) >= 1:
+            if not len(results) >= 1 or "/crunchy" == event.text:
                 if not event.reply_to:
                     res = f"""
                     [✯] 𝗔𝗛𝗔 𝗩𝗜𝗗𝗘𝗢 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥
