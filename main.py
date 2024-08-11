@@ -457,7 +457,7 @@ def main():
             results, pattern = filter_pattern(text)
             if not len(results) >= 1:
                 return
-            if len(results) > 1 or event.is_private:
+            if len(results) > 1 or event.is_private or event.is_group:
                 if not user in premium_users and not haveKey:
                     res = f"""
                     [✯] 𝗦𝗣𝗬𝗧𝗨𝗕𝗘 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
