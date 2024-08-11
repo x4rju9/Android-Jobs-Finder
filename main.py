@@ -7,6 +7,7 @@ from random import randint
 from re import sub, findall, compile, DOTALL
 import google.generativeai as gemini
 from checker import flex
+from time import sleep, time
 from keep_alive import keep_alive
 
 # Credentials.
