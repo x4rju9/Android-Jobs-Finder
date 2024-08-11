@@ -282,7 +282,7 @@ def main():
                 membership = "ᴀᴜᴛʜ"
             if not len(results) >= 1:
                 return
-            if len(results) > 1:
+            if len(results) > 1 or event.is_private:
                 if not user in premium_users and not haveKey:
                     res = f"""
                     [✯] 𝗖𝗥𝗨𝗡𝗖𝗛𝗬𝗥𝗢𝗟𝗟 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
@@ -413,12 +413,11 @@ def main():
             res = formatMessage(res)
             await event.reply(res)
         
-        grammer_pattern = r"^/flex"
-        @client.on(events.NewMessage(pattern=grammer_pattern))
+        flex_pattern = r"^/flex"
+        @client.on(events.NewMessage(pattern=flex_pattern))
         async def charge_five_dollar(event):
             global POOL
             results, pattern = filter_pattern(event.raw_text)
-            await event.reply(f"Found total {len(results)} cc 💦")
             key = findall(r"ACCESS [A-Z0-9]{16}", event.raw_text)
             haveKey = False
             if len(key) >= 1:
@@ -439,10 +438,10 @@ def main():
                 membership = "ᴀᴜᴛʜ"
             if not len(results) >= 1:
                 return
-            if len(results) > 1:
+            if len(results) > 1 or event.is_private:
                 if not user in premium_users and not haveKey:
                     res = f"""
-                    [✯] 𝗖𝗥𝗨𝗡𝗖𝗛𝗬𝗥𝗢𝗟𝗟 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
+                    [✯] 𝗦𝗣𝗬𝗧𝗨𝗕𝗘 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
                     ━━━━━━━━━━━━━━━━
                     [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ᴀᴄᴄᴇꜱꜱ ᴅᴇɴɪᴇᴅ ‼`
                     [✯] **ᴍᴇꜱꜱᴀɢᴇ** ↯ `ɴᴏ ᴀᴄᴄᴇꜱꜱ ᴋᴇʏ ꜰᴏᴜɴᴅ ‼`
