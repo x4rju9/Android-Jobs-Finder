@@ -7,6 +7,7 @@ from random import randint
 from re import sub, findall, compile, DOTALL
 import google.generativeai as gemini
 from checker import flex
+import asyncio
 from time import sleep, time
 from keep_alive import keep_alive
 
@@ -413,9 +414,7 @@ def main():
             res = formatMessage(res)
             await event.reply(res)
         
-        flex_pattern = r"^/flex"
-        @client.on(events.NewMessage(pattern=flex_pattern))
-        async def charge_five_dollar(event):
+        async def flex_charge(event):
             global POOL
             key = findall(r"ACCESS [A-Z0-9]{16}", event.raw_text)
             haveKey = False
@@ -436,7 +435,8 @@ def main():
             elif haveKey:
                 membership = "ᴀᴜᴛʜ"
             text = event.raw_text.strip()
-            if "/flex" == text or len(text) == 5:
+            results, pattern = filter_pattern(text)
+            if "/flex" == text or len(text) == 5 or not len(results) >= 1:
                 if not event.reply_to:
                     res = f"""
                     [✯] 𝗦𝗣𝗬𝗧𝗨𝗕𝗘 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
@@ -454,9 +454,6 @@ def main():
                     replied = await event.get_reply_message()
                     text = replied.raw_text
             
-            results, pattern = filter_pattern(text)
-            if not len(results) >= 1:
-                return
             if len(results) > 1 or event.is_private or event.is_group:
                 if not user in premium_users and not haveKey:
                     res = f"""
@@ -471,17 +468,25 @@ def main():
                     res = formatMessage(res)
                     await event.reply(res)
                     return
-            if not POOL.get(user) == None and not user in premium_users and not haveKey:
-                cooldown = time() - POOL.get(user)
-                if cooldown < 30:
-                    cooldown = 30-cooldown
-                    cooldown = f"ᴄᴏᴏʟᴅᴏᴡɴ ꜰᴏʀ: {round(cooldown, 2)} ꜱᴇɢᴜɴᴅᴏꜱ ⏳"
-                    await event.reply(cooldown)
-                    return
-                else:
-                    del POOL[user]
+            
             cc, mm, yy, cvv = "", "", "", ""
             for match in results:
+                
+                if not POOL.get(user) == None:
+                    cooldown = time() - POOL.get(user)
+                    m_cooldown = 30
+                    if user == "x4rju9":
+                        m_cooldown = 10
+                    if cooldown < m_cooldown:
+                        cooldown = m_cooldown-cooldown
+                        await event.reply(f"ᴄᴏᴏʟᴅᴏᴡɴ ꜰᴏʀ: {round(cooldown, 2)} ꜱᴇɢᴜɴᴅᴏꜱ ⏳")
+                        if user in premium_users:
+                            await asyncio.sleep(cooldown)
+                        else:
+                            return
+                    else:
+                        del POOL[user]
+
                 if pattern == 1:
                     cc = match[0]
                     mm = match[1]
@@ -521,6 +526,11 @@ def main():
                 message = formatMessage(message)
                 await event.reply(message)
                 POOL[user] = time()
+        
+        flex_pattern = r"^/flex"
+        @client.on(events.NewMessage(pattern=flex_pattern))
+        async def charge_five_dollar(event):
+            asyncio.create_task(flex_charge(event))
         
         append_pattern = r"^/append"
         @client.on(events.NewMessage(pattern=append_pattern))
