@@ -417,7 +417,6 @@ def main():
         @client.on(events.NewMessage(pattern=flex_pattern))
         async def charge_five_dollar(event):
             global POOL
-            results, pattern = filter_pattern(event.raw_text)
             key = findall(r"ACCESS [A-Z0-9]{16}", event.raw_text)
             haveKey = False
             if len(key) >= 1:
@@ -436,6 +435,26 @@ def main():
                 membership = "𝙿𝚁𝙴𝙼𝙸𝚄𝙼"
             elif haveKey:
                 membership = "ᴀᴜᴛʜ"
+            text = event.raw_text.strip()
+            if "/flex" == text or len(text) == 5:
+                if not event.reply_to:
+                    res = f"""
+                    [✯] 𝗦𝗣𝗬𝗧𝗨𝗕𝗘 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
+                    ━━━━━━━━━━━━━━━━
+                    [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ɴᴏ ᴄᴀʀᴅꜱ ꜰᴏᴜɴᴅ ‼`
+                    [✯] **ꜰᴏʀᴍᴀᴛ** ↯ `/ꜰʟᴇx ᴄᴄ|ᴍᴍ|ʏʏ|ᴄᴠᴄ ‼`
+                    ━━━━━━━━━━━━━━━━
+                    [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                    [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                    [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                    res = formatMessage(res)
+                    await event.reply(res)
+                    return
+                else:
+                    replied = await event.get_reply_message()
+                    text = replied.raw_text
+            
+            results, pattern = filter_pattern(text)
             if not len(results) >= 1:
                 return
             if len(results) > 1 or event.is_private:
