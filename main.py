@@ -643,6 +643,9 @@ def main():
                 else:
                     replied = await event.get_reply_message()
                     text = replied.raw_text
+                    r, p = filter_pattern(text)
+                    results = r
+                    pattern = p
             
             if len(results) > 1 or event.is_private or event.is_group:
                 if not user in premium_users and not haveKey:
