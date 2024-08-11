@@ -303,6 +303,20 @@ def main():
                     replied = await event.get_reply_message()
                     text = replied.raw_text
                     results = findall(r"([a-zA-Z0-9_\-\.]+@.*)\:(.*)", text)
+                    if not len(results) >= 1:
+                        res = f"""
+                        [✯] 𝗖𝗥𝗨𝗡𝗖𝗛𝗬𝗥𝗢𝗟𝗟 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
+                        ━━━━━━━━━━━━━━━━━━━━━━━━━
+                        [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ɴᴏ ᴄᴏᴍʙᴏ ꜰᴏᴜɴᴅ ‼`
+                        [✯] **ꜰᴏʀᴍᴀᴛ** ↯ `/ᴄʀᴜɴᴄʜʏ ᴇᴍᴀɪʟ:ᴘᴀꜱꜱᴡᴏʀᴅ ‼`
+                        ━━━━━━━━━━━━━━━━━━━━━━━━━
+                        [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                        [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                        [✯] **ᴀᴘɪ ʙʏ** ↯ @hellrip
+                        [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                        res = formatMessage(res)
+                        await event.reply(res)
+                        return
             
             if len(results) > 1 or event.is_private:
                 if not user in premium_users and not haveKey:
@@ -438,6 +452,20 @@ def main():
                     replied = await event.get_reply_message()
                     text = replied.raw_text
                     results = findall(r"([a-zA-Z0-9_\-\.]+@.*)\:(.*)", text)
+                    if not len(results) >= 1:
+                        res = f"""
+                        [✯] 𝗔𝗛𝗔 𝗩𝗜𝗗𝗘𝗢 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥
+                        ━━━━━━━━━━━━━━━━━━━━━━━━
+                        [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ɴᴏ ᴄᴏᴍʙᴏ ꜰᴏᴜɴᴅ ‼`
+                        [✯] **ꜰᴏʀᴍᴀᴛ** ↯ `/ᴀʜᴀᴠ ᴇᴍᴀɪʟ:ᴘᴀꜱꜱᴡᴏʀᴅ ‼`
+                        ━━━━━━━━━━━━━━━━━━━━━━━━
+                        [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                        [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                        [✯] **ᴀᴘɪ ʙʏ** ↯ @hellrip
+                        [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                        res = formatMessage(res)
+                        await event.reply(res)
+                        return
             
             if len(results) > 1 or event.is_private:
                 if not user in premium_users and not haveKey:
@@ -646,6 +674,19 @@ def main():
                     r, p = filter_pattern(text)
                     results = r
                     pattern = p
+                    if not len(results) >= 1:
+                        res = f"""
+                        [✯] 𝗦𝗣𝗬𝗧𝗨𝗕𝗘 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
+                        ━━━━━━━━━━━━━━━━
+                        [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ɴᴏ ᴄᴀʀᴅꜱ ꜰᴏᴜɴᴅ ‼`
+                        [✯] **ꜰᴏʀᴍᴀᴛ** ↯ `/ꜰʟᴇx ᴄᴄ|ᴍᴍ|ʏʏ|ᴄᴠᴄ ‼`
+                        ━━━━━━━━━━━━━━━━
+                        [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                        [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                        [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                        res = formatMessage(res)
+                        await event.reply(res)
+                        return
             
             if len(results) > 1 or event.is_private or event.is_group:
                 if not user in premium_users and not haveKey:
