@@ -451,12 +451,12 @@ def main():
                     res = formatMessage(res)
                     await event.reply(res)
                     return
-            
-            if not POOL.get(user) == None:
+            if not POOL.get(user) == None and not user in premium_users and not haveKey:
                 cooldown = time() - POOL.get(user)
                 if cooldown < 30:
                     cooldown = 30-cooldown
-                    await event.reply(f"ᴄᴏᴏʟᴅᴏᴡɴ ꜰᴏʀ: {round(cooldown, 2)} ꜱᴇɢᴜɴᴅᴏꜱ ⏳")
+                    cooldown = f"ᴄᴏᴏʟᴅᴏᴡɴ ꜰᴏʀ: {round(cooldown, 2)} ꜱᴇɢᴜɴᴅᴏꜱ ⏳"
+                    await event.reply(cooldown)
                     return
                 else:
                     del POOL[user]
