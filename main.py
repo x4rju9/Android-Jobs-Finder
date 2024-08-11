@@ -6,6 +6,7 @@ import os
 from random import randint
 from re import sub, findall, compile, DOTALL
 import google.generativeai as gemini
+from checker import flex
 from keep_alive import keep_alive
 
 # Credentials.
@@ -106,6 +107,8 @@ premium_users = filter_env(os.environ.get("PUSERS").split(","))
 
 # Access key
 ACCESS_KEY = os.environ.get("ACCESS_KEY").strip()
+CHECKER_ACCESS_KEY = os.environ.get("CHECKER_ACCESS_KEY").strip()
+POOL = {}
 
 # Gemini Access Key
 GEMINI_ACCESS_KEY = os.environ.get("GEMINI_KEY").strip()
@@ -234,7 +237,7 @@ def main():
 
         @client.on(events.NewMessage(chats=fuel_jobs))
         async def find_jobs(event):
-            job = event.raw_text
+            job = event.text
             result = getJobRole(job.lower())
 
             if "android" in result:
@@ -337,44 +340,215 @@ def main():
                 res = formatMessage(res)
                 await event.reply(res)
 
-        gemini_question_pattern = r"^(?:/google|/kulfi)"
+        gemini_question_pattern = r"^(?:/google|/kulfi|/ask)"
         @client.on(events.NewMessage(pattern=gemini_question_pattern))
         async def gemini_chat(event):
             # Getting user info
             user = await event.get_sender()
-            user = user.username
+            name = user.first_name
+            username = user.username
             # Extracting question
             question = sub(gemini_question_pattern, "", event.raw_text).strip()
             if "" == question or len(question) <= 1:
-                res = f"""
-                [✯] 𝗦𝗣𝗬𝗧𝗨𝗕𝗘 ⚡ 𝗔𝗜
-                ━━━━━━━━━━━━━━━━
-                **NO QUESTION FOUND**
-                **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ @{user} is the dumbest person on internet.
-                ━━━━━━━━━━━━━━━━
-                [✯] **ᴀᴘɪ** ↯ ʟɪᴠᴇ ☘️
-                [✯] **ᴀꜱᴋᴇᴅ ʙʏ** ↯ @{user}
-                [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
-                res = formatMessage(res)
-                await event.reply(res)
-                return
+                if not event.reply_to:
+                    res = f"""
+                    **NO QUESTION FOUND**
+                    ━━━━━━━━━━━━━━━━
+                    {name} is the dumbest person on internet.
+                    ━━━━━━━━━━━━━━━━
+                    **ᴀꜱᴋᴇᴅ ʙʏ** ↯ @{username}"""
+                    res = formatMessage(res)
+                    await event.reply(res)
+                    return
+                else:
+                    replied = await event.get_reply_message()
+                    question = replied.raw_text
             # Generating answer
             answer = model.generate_content(question)
 
             res = f"""
-            [✯] 𝗦𝗣𝗬𝗧𝗨𝗕𝗘 ⚡ 𝗔𝗜
-            ━━━━━━━━━━━━━━━━
             **{question.upper()}**
-            **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ {answer.text}
             ━━━━━━━━━━━━━━━━
-            [✯] **ᴀᴘɪ** ↯ ʟɪᴠᴇ ☘️
-            [✯] **ᴀꜱᴋᴇᴅ ʙʏ** ↯ @{user}
-            [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+            {answer.text}
+            ━━━━━━━━━━━━━━━━
+            **ᴀꜱᴋᴇᴅ ʙʏ** ↯ @{username}"""
             res = formatMessage(res)
             await event.reply(res)
-
         
 
+        grammer_pattern = r"^/grammer"
+        @client.on(events.NewMessage(pattern=grammer_pattern))
+        async def check_grammer(event):
+            # Getting user info
+            user = await event.get_sender()
+            name = user.first_name
+            username = user.username
+            # Extracting sentence
+            sentence = sub(grammer_pattern, "", event.raw_text).strip()
+            if "" == sentence or len(sentence) <= 1:
+                if not event.reply_to:
+                    res = f"""
+                    **NO SENTENCE FOUND**
+                    ━━━━━━━━━━━━━━━━
+                    {name} is the dumbest person on internet.
+                    ━━━━━━━━━━━━━━━━
+                    **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{username}"""
+                    res = formatMessage(res)
+                    await event.reply(res)
+                    return
+                else:
+                    replied = await event.get_reply_message()
+                    sentence = replied.raw_text
+            # Generating answer
+            sentence = f'is this phrase grammitically correct "{sentence}"'
+            answer = model.generate_content(sentence)
+
+            res = f"""
+            **RESPONSE**
+            ━━━━━━━━━━━━━━━━
+            {answer.text}
+            ━━━━━━━━━━━━━━━━
+            **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{username}"""
+            res = formatMessage(res)
+            await event.reply(res)
+        
+        grammer_pattern = r"^/flex"
+        @client.on(events.NewMessage(pattern=grammer_pattern))
+        async def charge_five_dollar(event):
+            global POOL
+            results, pattern = filter_pattern(event.raw_text)
+            key = findall(r"ACCESS [A-Z0-9]{16}", event.raw_text)
+            haveKey = False
+            if len(key) >= 1:
+                key = key[0]
+                if key == CHECKER_ACCESS_KEY:
+                    haveKey = True
+            # Getting the sender infor to extract the username
+            user = await event.get_sender()
+            user = user.username
+            # Membership status
+            membership = "𝙵𝚁𝙴𝙴"
+            # Setting membership status based on the who accesses it
+            if user == "x4rju9":
+                membership = "𝙳𝙴𝚅𝙴𝙻𝙾𝙿𝙴𝚁"
+            elif user in premium_users:
+                membership = "𝙿𝚁𝙴𝙼𝙸𝚄𝙼"
+            elif haveKey:
+                membership = "ᴀᴜᴛʜ"
+            if not len(results) >= 1:
+                return
+            if len(results) > 1:
+                if not user in premium_users and not haveKey:
+                    res = f"""
+                    [✯] 𝗖𝗥𝗨𝗡𝗖𝗛𝗬𝗥𝗢𝗟𝗟 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
+                    ━━━━━━━━━━━━━━━━
+                    [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ᴀᴄᴄᴇꜱꜱ ᴅᴇɴɪᴇᴅ ‼`
+                    [✯] **ᴍᴇꜱꜱᴀɢᴇ** ↯ `ɴᴏ ᴀᴄᴄᴇꜱꜱ ᴋᴇʏ ꜰᴏᴜɴᴅ ‼`
+                    ━━━━━━━━━━━━━━━━
+                    [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                    [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                    [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                    res = formatMessage(res)
+                    await event.reply(res)
+                    return
+            
+            if not POOL.get(user) == None:
+                cooldown = time() - POOL.get(user)
+                if cooldown < 30:
+                    cooldown = 30-cooldown
+                    await event.reply(f"ᴄᴏᴏʟᴅᴏᴡɴ ꜰᴏʀ: {round(cooldown, 2)} ꜱᴇɢᴜɴᴅᴏꜱ ⏳")
+                    return
+                else:
+                    del POOL[user]
+            cc, mm, yy, cvv = "", "", "", ""
+            for match in results:
+                if pattern == 1:
+                    cc = match[0]
+                    mm = match[1]
+                    yy = match[2]
+                    cvv = match[3]
+                elif pattern == 2:
+                    cc = match[0]
+                    mm = match[2]
+                    yy = match[3]
+                    cvv = match[1]
+                elif pattern == 3:
+                    cc = "".join(match[0:4])
+                    mm = match[4]
+                    yy = match[5]
+                    cvv = match[6]
+                elif pattern == 4:
+                    cc = "".join(match[0:4])
+                    mm = match[5]
+                    yy = match[6]
+                    cvv = match[4]
+                if len(yy) < 4:
+                    yy = "20" + yy
+                status, mes, time_taken = flex(cc, mm, yy, cvv)
+                message = f"""
+                [✯] 𝗦𝗣𝗬𝗧𝗨𝗕𝗘 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥
+                ━━━━━━━━━━━━━━━━━━━━━━
+                [✯] **ᴄᴄ** ↯ `{cc}`
+                [✯] **ᴇxᴘɪʀʏ** ↯ `{mm}/{yy}`
+                [✯] **ᴄᴠᴄ** ↯ `{cvv}`
+                [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ {status}
+                [✯] **ᴍᴇꜱꜱᴀɢᴇ** ↯ {mes}
+                [✯] **ᴛɪᴍᴇ ᴛᴀᴋᴇɴ** ↯ {time_taken} ꜱᴇɢᴜɴᴅᴏꜱ ⌛
+                ━━━━━━━━━━━━━━━━━━━━━━
+                [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                message = formatMessage(message)
+                await event.reply(message)
+                POOL[user] = time()
+        
+        append_pattern = r"^/append"
+        @client.on(events.NewMessage(pattern=append_pattern))
+        async def grant_premium(event):
+            global premium_users
+            user = await event.get_sender()
+            user = user.username
+
+            if not user == "x4rju9":
+                await event.reply("ᴡʜᴏ ᴅᴏ ʏᴏᴜ ᴛʜɪɴᴋ ʏᴏᴜ'ʀᴇ ᴏɴʟʏ ‼\nʟᴏʀᴅ ᴄᴀɴ ᴀᴜᴛʜᴏʀɪᴢᴇ ᴘᴇᴏᴘʟᴇ.")
+                return
+            
+            user2 = sub(append_pattern, "", event.raw_text).strip()
+            if "" == user2 or len(user2) <= 1:
+                if not event.reply_to:
+                    await event.reply("ᴄᴀɴᴛ ꜰɪɴᴅ ᴀɴʏ ᴜꜱᴇʀ ᴛᴏ ᴀᴜᴛʜᴏʀɪᴢᴇ ‼")
+                else:
+                    replied = await event.get_reply_message()
+                    user2 = await replied.get_sender()
+                    user2 = user2.username
+            
+            premium_users.append(user2)
+            await event.reply(f"ᴜꜱᴇʀ @{user2} ɪꜱ ᴀᴘᴘᴇɴᴅᴇᴅ ᴛᴏ ᴛʜᴇ ʟɪꜱᴛ ᴏꜰ ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀꜱ ✅")
+        
+        remove_pattern = r"^/remove"
+        @client.on(events.NewMessage(pattern=remove_pattern))
+        async def grant_premium(event):
+            global premium_users
+            user = await event.get_sender()
+            user = user.username
+
+            if not user == "x4rju9":
+                await event.reply("ᴡʜᴏ ᴅᴏ ʏᴏᴜ ᴛʜɪɴᴋ ʏᴏᴜ'ʀᴇ ᴏɴʟʏ ‼\nʟᴏʀᴅ ᴄᴀɴ ᴀᴜᴛʜᴏʀɪᴢᴇ ᴘᴇᴏᴘʟᴇ.")
+                return
+            
+            user2 = sub(remove_pattern, "", event.raw_text).strip()
+            if "" == user2 or len(user2) <= 1:
+                if not event.reply_to:
+                    await event.reply("ᴄᴀɴᴛ ꜰɪɴᴅ ᴀɴʏ ᴜꜱᴇʀ ᴛᴏ ᴀᴜᴛʜᴏʀɪᴢᴇ ‼")
+                else:
+                    replied = await event.get_reply_message()
+                    user2 = await replied.get_sender()
+                    user2 = user2.username
+            
+            premium_users.remove(user2)
+            await event.reply(f"ᴜꜱᴇʀ @{user2} ɪꜱ ʀᴇᴍᴏᴠᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ʟɪꜱᴛ ᴏꜰ ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀꜱ ‼")
+
+        
         # start bot
         client.start()
         client.run_until_disconnected()
