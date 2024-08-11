@@ -98,24 +98,24 @@ def flex(cc, month, year, cvc): # Stripe
     mes = get_string(now.text, "balance.textContent = '", "'")
     res = mes.lower()
     status = "ᴀᴘᴘʀᴏᴠᴇᴅ"
-    if "security code is incorrect" in res:
-        status += " ᴄᴄɴ ✅"
-        mes = "ɪɴᴄᴏʀʀᴇᴄᴛ_ᴄᴠᴄ"
-    elif "incorrect_cvc" in res:
-        status += " ᴄᴄɴ ✅"
-        mes = "ɪɴᴄᴏʀʀᴇᴄᴛ_ᴄᴠᴄ"
-    elif "succeeded" in res:
+    if "succeeded" in res or "success" in res or "successful" in res:
         status += " ᴄᴠᴠ ✅"
         mes = "ᴄʜᴀʀɢᴇᴅ 5$"
-    elif "insuffient funds" in res:
+    elif "security" in res or "incorrect cvc" in res:
+        status += " ᴄᴄɴ ✅"
+        mes = "ɪɴᴄᴏʀʀᴇᴄᴛ_ᴄᴠᴄ"
+    elif "funds" in res:
         status += " ᴄᴠᴠ ✅"
         mes = "ɪɴꜱᴜꜰꜰɪᴄɪᴇɴᴛ ꜰᴜɴᴅꜱ"
-    elif "insuffient_funds" in res:
-        status += " ᴄᴠᴠ ✅"
-        mes = "ɪɴꜱᴜꜰꜰɪᴄɪᴇɴᴛ ꜰᴜɴᴅꜱ"
-    elif "thank you" in res:
+    elif "payment" in res or "thank you" in res:
         status = "ᴄʜᴀʀɢᴇᴅ ᴄᴠᴠ ✅"
         mes = "ᴄʜᴀʀɢᴇᴅ 5$"
+    elif "fraudulent" in res or "fraud" in res or "might" in res or "risk" in res:
+        status = "ᴅᴇᴄʟɪɴᴇᴅ ❌"
+        mes = "ꜰʀᴀᴜᴅᴜʟᴇɴᴛ"
+    elif "your card was declined" in res:
+        status = "ᴅᴇᴄʟɪɴᴇᴅ ❌"
+        mes = "ɢᴇɴᴇʀɪᴄ ᴅᴇᴄʟɪɴᴇ"
     else:
         status = "ᴅᴇᴄʟɪɴᴇᴅ ❌"
     return status, mes, time_taken
