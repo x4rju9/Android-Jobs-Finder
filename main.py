@@ -418,7 +418,7 @@ def main():
         async def charge_five_dollar(event):
             global POOL
             results, pattern = filter_pattern(event.raw_text)
-            sentMessage = await event.reply(f"Found total {len(results)} cc 💦")
+            await event.reply(f"Found total {len(results)} cc 💦")
             key = findall(r"ACCESS [A-Z0-9]{16}", event.raw_text)
             haveKey = False
             if len(key) >= 1:
@@ -501,7 +501,7 @@ def main():
                 [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
                 [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
                 message = formatMessage(message)
-                await sentMessage(message)
+                await event.reply(message)
                 POOL[user] = time()
         
         append_pattern = r"^/append"
