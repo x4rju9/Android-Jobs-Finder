@@ -283,8 +283,6 @@ def main():
                 membership = "𝙿𝚁𝙴𝙼𝙸𝚄𝙼"
             elif haveKey:
                 membership = "ᴀᴜᴛʜ"
-            if not len(results) >= 1:
-                return
             
             if not len(results) >= 1 or "/crunchy" == event.text:
                 if not event.reply_to:
@@ -420,10 +418,8 @@ def main():
                 membership = "𝙿𝚁𝙴𝙼𝙸𝚄𝙼"
             elif haveKey:
                 membership = "ᴀᴜᴛʜ"
-            if not len(results) >= 1:
-                return
             
-            if not len(results) >= 1 or "/crunchy" == event.text:
+            if not len(results) >= 1 or "/ahav" == event.raw_text:
                 if not event.reply_to:
                     res = f"""
                     [✯] 𝗔𝗛𝗔 𝗩𝗜𝗗𝗘𝗢 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥
@@ -522,7 +518,6 @@ def main():
                 [✯] **ᴀᴘɪ ʙʏ** ↯ @hellrip
                 [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
                 res = formatMessage(res)
-                res = formatMessage(res)
                 if shouldEditMessage:
                     await editMessage.edit(res)
                     editMessage = None
@@ -609,6 +604,8 @@ def main():
         
         async def flex_charge(event):
             global POOL
+            editMessage = None
+            shouldEditMessage = False
             key = findall(r"ACCESS [A-Z0-9]{16}", event.raw_text)
             haveKey = False
             if len(key) >= 1:
@@ -669,10 +666,15 @@ def main():
                     cooldown = time() - POOL.get(user)
                     m_cooldown = 30
                     if user == "x4rju9":
-                        m_cooldown = 10
+                        m_cooldown = 2
+                    elif user in premium_users:
+                        m_cooldown = 5
+                    elif haveKey:
+                        m_cooldown = 7
                     if cooldown < m_cooldown:
                         cooldown = m_cooldown-cooldown
-                        await event.reply(f"ᴄᴏᴏʟᴅᴏᴡɴ ꜰᴏʀ: {round(cooldown, 2)} ꜱᴇɢᴜɴᴅᴏꜱ ⏳")
+                        editMessage = await event.reply(f"ᴄᴏᴏʟᴅᴏᴡɴ ꜰᴏʀ: {round(cooldown, 2)} ꜱᴇɢᴜɴᴅᴏꜱ ⏳")
+                        shouldEditMessage = True
                         if user in premium_users:
                             await asyncio.sleep(cooldown)
                         else:
@@ -717,7 +719,12 @@ def main():
                 [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
                 [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
                 message = formatMessage(message)
-                await event.reply(message)
+                if shouldEditMessage:
+                    await editMessage.edit(message)
+                    editMessage = None
+                    shouldEditMessage = False
+                else:
+                    await event.reply(message)
                 POOL[user] = time()
         
         flex_pattern = r"^/flex"
