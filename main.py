@@ -500,7 +500,7 @@ def main():
                 [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
                 [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
                 message = formatMessage(message)
-                await event.reply(message)
+                await sentMessage(message)
                 POOL[user] = time()
         
         append_pattern = r"^/append"
