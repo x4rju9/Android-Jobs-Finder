@@ -515,7 +515,7 @@ def main():
                 status = "ᴄʀᴇᴅᴇɴᴛɪᴀʟꜱ ᴍɪꜱᴍᴀᴛᴄʜ ‼"
                 if len(uPass) > 20:
                     uPass = uPass[0:20]
-                if "premium" in response.text:
+                if "good" in response.text:
                     status = "ᴀᴘᴘʀᴏᴠᴇᴅ ᴘʀᴇᴍɪᴜᴍ ✅"
                     if not event.is_private:
                         oLength = len(uPass)
@@ -527,8 +527,8 @@ def main():
                                 i = randint(0, oLength-1)
                             track.append(i)
                             uPass = uPass[0:i] + "X" + uPass[i+1:]
-                elif "good" in response.text:
-                    status = "ꜰʀᴇᴇ ᴀᴄᴄᴏᴜɴᴛ ✅"
+                elif "limit" in response.text:
+                    status = "ᴘʀᴇᴍɪᴜᴍ - ʟɪᴍɪᴛ ᴇxᴄᴇᴇᴅ ❗"
                 # Creating Response Format
                 if len(uEmail) > 25:
                     uEmail = f"\n{uEmail}"
