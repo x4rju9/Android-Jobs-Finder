@@ -258,7 +258,7 @@ def main():
                 if response == "null":
                     return
                 response = formatMessage(response)
-                await client.send_message(-1001769821742, response, link_preview=False)
+                await client.send_message("FreePlayStore", response, link_preview=False)
 
         async def crunchy_gate(event):
             global POOL
