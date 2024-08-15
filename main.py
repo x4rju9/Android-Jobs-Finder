@@ -258,7 +258,7 @@ def main():
                 if response == "null":
                     return
                 response = formatMessage(response)
-                await client.send_message(-1002150929528, response, link_preview=False)
+                await client.send_message(-1002237078155, response, link_preview=False)
 
         async def crunchy_gate(event):
             global POOL
