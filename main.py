@@ -331,8 +331,22 @@ def main():
                             await event.reply(res)
                             return
                 
-                if len(results) > 1 or event.is_private:
-                    if not user in premium_users and not haveKey:
+                if len(results) >= 1:
+                    shouldReturn = False
+                    if event.is_private:
+                        if not user in premium_users and not haveKey:
+                            shouldReturn = True
+                    elif event.is_group:
+                        if not user in premium_users and not haveKey:
+                            if event.chat_id in authorized_chats:
+                                if len(results) > 1:
+                                    shouldReturn = True
+                                else:
+                                    shouldReturn = False
+                            else:
+                                shouldReturn = True
+                    
+                    if shouldReturn:
                         res = f"""
                         [✯] 𝗖𝗥𝗨𝗡𝗖𝗛𝗬𝗥𝗢𝗟𝗟 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
                         ━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -484,8 +498,22 @@ def main():
                             await event.reply(res)
                             return
                 
-                if len(results) > 1 or event.is_private:
-                    if not user in premium_users and not haveKey:
+                if len(results) >= 1:
+                    shouldReturn = False
+                    if event.is_private:
+                        if not user in premium_users and not haveKey:
+                            shouldReturn = True
+                    elif event.is_group:
+                        if not user in premium_users and not haveKey:
+                            if event.chat_id in authorized_chats:
+                                if len(results) > 1:
+                                    shouldReturn = True
+                                else:
+                                    shouldReturn = False
+                            else:
+                                shouldReturn = True
+                    
+                    if shouldReturn:
                         res = f"""
                         [✯] 𝗔𝗛𝗔 𝗩𝗜𝗗𝗘𝗢 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
                         ━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -686,10 +714,10 @@ def main():
                     if not event.reply_to:
                         res = f"""
                         [✯] $𝟱 𝗦𝗧𝗥𝗜𝗣𝗘 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
-                        ━━━━━━━━━━━━━━━━
+                        ━━━━━━━━━━━━━━━━━━━━━━━━
                         [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ɴᴏ ᴄᴀʀᴅꜱ ꜰᴏᴜɴᴅ ‼`
                         [✯] **ꜰᴏʀᴍᴀᴛ** ↯ `/ꜰʟᴇx ᴄᴄ|ᴍᴍ|ʏʏ|ᴄᴠᴄ ‼`
-                        ━━━━━━━━━━━━━━━━
+                        ━━━━━━━━━━━━━━━━━━━━━━━━
                         [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
                         [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
                         [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
@@ -705,10 +733,10 @@ def main():
                         if not len(results) >= 1:
                             res = f"""
                             [✯] $𝟱 𝗦𝗧𝗥𝗜𝗣𝗘 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
-                            ━━━━━━━━━━━━━━━━
+                            ━━━━━━━━━━━━━━━━━━━━━━━━
                             [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ɴᴏ ᴄᴀʀᴅꜱ ꜰᴏᴜɴᴅ ‼`
                             [✯] **ꜰᴏʀᴍᴀᴛ** ↯ `/ꜰʟᴇx ᴄᴄ|ᴍᴍ|ʏʏ|ᴄᴠᴄ ‼`
-                            ━━━━━━━━━━━━━━━━
+                            ━━━━━━━━━━━━━━━━━━━━━━━━
                             [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
                             [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
                             [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
@@ -724,17 +752,20 @@ def main():
                     elif event.is_group:
                         if not user in premium_users and not haveKey:
                             if event.chat_id in authorized_chats:
-                                shouldReturn = False
+                                if len(results) > 1:
+                                    shouldReturn = True
+                                else:
+                                    shouldReturn = False
                             else:
                                 shouldReturn = True
                     
                     if shouldReturn:
                         res = f"""
                         [✯] $𝟱 𝗦𝗧𝗥𝗜𝗣𝗘 ⚡ 𝗖𝗛𝗘𝗖𝗞𝗘𝗥 
-                        ━━━━━━━━━━━━━━━━
+                        ━━━━━━━━━━━━━━━━━━━━━━━━
                         [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ᴀᴄᴄᴇꜱꜱ ᴅᴇɴɪᴇᴅ ‼`
                         [✯] **ᴍᴇꜱꜱᴀɢᴇ** ↯ `ɴᴏ ᴀᴄᴄᴇꜱꜱ ᴋᴇʏ ꜰᴏᴜɴᴅ ‼`
-                        ━━━━━━━━━━━━━━━━
+                        ━━━━━━━━━━━━━━━━━━━━━━━━
                         [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
                         [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
                         [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
