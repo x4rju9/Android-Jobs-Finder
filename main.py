@@ -109,6 +109,9 @@ fuel_jobs = filter_env(os.environ.get("JOBS_SOURCE").split(","))
 # Filter CC Channels
 fuel_credit_card = filter_env(os.environ.get("CC_SOURCE").split(","))
 
+# Filter Movies Channels
+fuel_movies = filter_env(os.environ.get("MOVIES_SOURCE").split(","))
+
 # List of premium users
 premium_users = filter_env(os.environ.get("PUSERS").split(","))
 authorized_chats = []
@@ -980,6 +983,15 @@ def main():
                         key_to_be_deleted = AUTH_KEY_POOL[user2]
                         del AUTH_KEY_POOL[user2]
                         await event.reply(f"ᴋᴇʏ `{key_to_be_deleted}`\nᴀꜱꜱᴏᴄɪᴀᴛᴇᴅ ᴡɪᴛʜ @{user2} ɪꜱ ʀᴇᴠᴏᴋᴇᴅ ‼")
+            except:
+                pass
+
+        @client.on(events.NewMessage(chats=fuel_movies))
+        @client.on(events.MessageEdited(chats=fuel_movies))
+        async def find_movies(event):
+            try:
+                if event.video or event.document:
+                    await client.forward_messages(-1002002129675, event.message)
             except:
                 pass
         
