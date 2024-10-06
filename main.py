@@ -990,19 +990,8 @@ def main():
         @client.on(events.MessageEdited(chats=fuel_movies))
         async def find_movies(event):
             try:
-                caption = ""
-                if event.text:
-                    caption = event.text
-                if event.message:
-                    if event.message.caption:
-                        caption = event.message.caption
-                video = ""
-                if event.video:
-                    video = event.video
-                if event.document:
-                    video = event.document
-                if video:
-                    await client.send_file(-1002002129675, caption = caption, file = video)
+                if event.video or event.document:
+                    await client.forward_messages(-1002002129675, event.message)
             except:
                 pass
         
