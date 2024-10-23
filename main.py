@@ -11,6 +11,7 @@ from checker import flex
 import asyncio
 from time import sleep, time
 from keep_alive import keep_alive
+from requests import get
 
 # Credentials.
 api_id = int(os.environ.get("API_ID"))
@@ -994,6 +995,150 @@ def main():
                     await client.forward_messages(-1002002129675, event.message)
             except:
                 pass
+
+        async def sms_bomber(event):
+            global POOL
+            global AUTH_KEY_POOL
+            global authorized_chats
+            try:
+                editMessage = None
+                shouldEditMessage = False
+                # Getting the sender infor to extract the username
+                user = await event.get_sender()
+                user = user.username
+                key = findall(r"ACCESS [A-Z0-9]{16}", event.raw_text)
+                haveKey = False
+                if len(key) >= 1:
+                    key = key[0]
+                    if key == AUTH_KEY_POOL.get(user):
+                        haveKey = True
+                # Membership status
+                membership = "𝙵𝚁𝙴𝙴"
+                # Setting membership status based on the who accesses it
+                if user == "x4rju9":
+                    membership = "𝙳𝙴𝚅𝙴𝙻𝙾𝙿𝙴𝚁"
+                elif user in premium_users:
+                    membership = "𝙿𝚁𝙴𝙼𝙸𝚄𝙼"
+                elif haveKey:
+                    membership = "ᴀᴜᴛʜ"
+                number = sub(r"^/sbomb", "", event.raw_text).strip()
+                if "/sbomb" == text or len(text) == 6:
+                    if not event.reply_to:
+                        res = f"""
+                        [✯] 𝗦𝗠𝗦 ⚡ 𝗕𝗢𝗠𝗕𝗘𝗥
+                        ━━━━━━━━━━━━━━━━━━━━━━━━
+                        [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ɴᴏ ɴᴜᴍʙᴇʀ ꜰᴏᴜɴᴅ ‼`
+                        [✯] **ꜰᴏʀᴍᴀᴛ** ↯ `/ꜱʙᴏᴍʙ 1234567890 ‼`
+                        ━━━━━━━━━━━━━━━━━━━━━━━━
+                        [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                        [✯] **ʙᴏᴍʙᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                        [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                        res = formatMessage(res)
+                        await event.reply(res)
+                        return
+                    else:
+                        replied = await event.get_reply_message()
+                        text = replied.raw_text
+                        r, p = filter_pattern(text)
+                        results = r
+                        pattern = p
+                        if not len(results) >= 1:
+                            res = f"""
+                            [✯] 𝗦𝗠𝗦 ⚡ 𝗕𝗢𝗠𝗕𝗘𝗥
+                            ━━━━━━━━━━━━━━━━━━━━━━━━
+                            [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ɴᴏ ɴᴜᴍʙᴇʀ ꜰᴏᴜɴᴅ ‼`
+                            [✯] **ꜰᴏʀᴍᴀᴛ** ↯ `/ꜱʙᴏᴍʙ 1234567890 ‼`
+                            ━━━━━━━━━━━━━━━━━━━━━━━━
+                            [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                            [✯] **ʙᴏᴍʙᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                            [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                            res = formatMessage(res)
+                            await event.reply(res)
+                            return
+                
+                if len(results) >= 1:
+                shouldReturn = False
+                if event.is_private:
+                    if not user in premium_users and not haveKey:
+                        shouldReturn = True
+                elif event.is_group:
+                    if not user in premium_users and not haveKey:
+                        if event.chat_id in authorized_chats:
+                            if len(results) > 1:
+                                shouldReturn = True
+                            else:
+                                shouldReturn = False
+                        else:
+                            shouldReturn = True
+                    
+                if shouldReturn:
+                    res = f"""
+                    [✯] 𝗦𝗠𝗦 ⚡ 𝗕𝗢𝗠𝗕𝗘𝗥 
+                    ━━━━━━━━━━━━━━━━━━━━━━━━
+                    [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ᴀᴄᴄᴇꜱꜱ ᴅᴇɴɪᴇᴅ ‼`
+                    [✯] **ᴍᴇꜱꜱᴀɢᴇ** ↯ `ɴᴏ ᴀᴄᴄᴇꜱꜱ ᴋᴇʏ ꜰᴏᴜɴᴅ ‼`
+                    ━━━━━━━━━━━━━━━━━━━━━━━━
+                    [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                    [✯] **ʙᴏᴍʙᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                    [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                    res = formatMessage(res)
+                    await event.reply(res)
+                    return
+                    
+                if not POOL.get(user) == None:
+                    cooldown = time() - POOL.get(user)
+                    m_cooldown = 30
+                    if user == "x4rju9":
+                        m_cooldown = 2
+                    elif user in premium_users:
+                        m_cooldown = 5
+                    elif haveKey:
+                        m_cooldown = 7
+                    if cooldown < m_cooldown:
+                        cooldown = m_cooldown-cooldown
+                        editMessage = await event.reply(f"ᴄᴏᴏʟᴅᴏᴡɴ ꜰᴏʀ: {round(cooldown, 2)} ꜱᴇɢᴜɴᴅᴏꜱ ⏳")
+                        shouldEditMessage = True
+                        if user in premium_users:
+                            await asyncio.sleep(cooldown)
+                        else:
+                            return
+                    else:
+                        del POOL[user]
+
+                    response = get(f"https://krishnabomb.onrender.com/mass/{number}")
+                    status_code = response.status_code
+                    time_taken = round(response.elapsed.total_seconds(), 2)
+
+                    rMessage = "Bombing Started"
+                    if not status_code == 200:
+                        rMessage = "Try again later !!"
+
+                    message = f"""
+                    [✯] 𝗦𝗠𝗦 ⚡ 𝗕𝗢𝗠𝗕𝗘𝗥
+                    ━━━━━━━━━━━━━━━━━━━━━━
+                    [✯] **ɴᴜᴍʙᴇʀ** ↯ `{cc}`
+                    [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ {status_code}
+                    [✯] **ᴍᴇꜱꜱᴀɢᴇ** ↯ {rMessage}
+                    [✯] **ᴛɪᴍᴇ ᴛᴀᴋᴇɴ** ↯ {time_taken} ꜱᴇɢᴜɴᴅᴏꜱ ⌛
+                    ━━━━━━━━━━━━━━━━━━━━━━
+                    [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                    [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                    [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                    message = formatMessage(message)
+                    if shouldEditMessage:
+                        await editMessage.edit(message)
+                        editMessage = None
+                        shouldEditMessage = False
+                    else:
+                        await event.reply(message)
+                    POOL[user] = time()
+            except:
+                pass
+        
+        sb_pattern = r"^/sbomb"
+        @client.on(events.NewMessage(pattern=sb_pattern))
+        async def sms_bomber_handler(event):
+            asyncio.create_task(flex_charge(event)
         
         # start bot
         client.start()
