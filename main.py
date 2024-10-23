@@ -1056,8 +1056,7 @@ def main():
                             await event.reply(res)
                             return
                 
-                if len(results) >= 1:
-                shouldReturn = False
+                
                 if event.is_private:
                     if not user in premium_users and not haveKey:
                         shouldReturn = True
@@ -1138,7 +1137,7 @@ def main():
         sb_pattern = r"^/sbomb"
         @client.on(events.NewMessage(pattern=sb_pattern))
         async def sms_bomber_handler(event):
-            asyncio.create_task(flex_charge(event)
+            asyncio.create_task(sms_bomber(event))
         
         # start bot
         client.start()
