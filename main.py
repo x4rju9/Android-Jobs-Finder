@@ -1022,7 +1022,7 @@ def main():
                 elif haveKey:
                     membership = "ᴀᴜᴛʜ"
                 number = sub(r"^/sbomb", "", event.raw_text).strip()
-                if "/sbomb" == text or len(text) == 6:
+                if "/sbomb" == number or len(number) == 6:
                     if not event.reply_to:
                         res = f"""
                         [✯] 𝗦𝗠𝗦 ⚡ 𝗕𝗢𝗠𝗕𝗘𝗥
@@ -1036,26 +1036,6 @@ def main():
                         res = formatMessage(res)
                         await event.reply(res)
                         return
-                    else:
-                        replied = await event.get_reply_message()
-                        text = replied.raw_text
-                        r, p = filter_pattern(text)
-                        results = r
-                        pattern = p
-                        if not len(results) >= 1:
-                            res = f"""
-                            [✯] 𝗦𝗠𝗦 ⚡ 𝗕𝗢𝗠𝗕𝗘𝗥
-                            ━━━━━━━━━━━━━━━━━━━━━━━━
-                            [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ɴᴏ ɴᴜᴍʙᴇʀ ꜰᴏᴜɴᴅ ‼`
-                            [✯] **ꜰᴏʀᴍᴀᴛ** ↯ `/ꜱʙᴏᴍʙ 1234567890 ‼`
-                            ━━━━━━━━━━━━━━━━━━━━━━━━
-                            [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
-                            [✯] **ʙᴏᴍʙᴇᴅ ʙʏ** ↯ @{user} [{membership}]
-                            [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
-                            res = formatMessage(res)
-                            await event.reply(res)
-                            return
-                
                 
                 if event.is_private:
                     if not user in premium_users and not haveKey:
