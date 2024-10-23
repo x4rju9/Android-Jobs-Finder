@@ -1022,7 +1022,7 @@ def main():
                 elif haveKey:
                     membership = "ᴀᴜᴛʜ"
                 number = sub(r"^/sbomb", "", event.raw_text).strip()
-                if "/sbomb" == number or len(number) == 6:
+                if number == "" or len(number) != 10:
                     if not event.reply_to:
                         res = f"""
                         [✯] 𝗦𝗠𝗦 ⚡ 𝗕𝗢𝗠𝗕𝗘𝗥
@@ -1037,16 +1037,14 @@ def main():
                         await event.reply(res)
                         return
                 
+                shouldReturn = False
                 if event.is_private:
                     if not user in premium_users and not haveKey:
                         shouldReturn = True
                 elif event.is_group:
                     if not user in premium_users and not haveKey:
                         if event.chat_id in authorized_chats:
-                            if len(results) > 1:
-                                shouldReturn = True
-                            else:
-                                shouldReturn = False
+                            shouldReturn = False
                         else:
                             shouldReturn = True
                     
@@ -1084,33 +1082,35 @@ def main():
                     else:
                         del POOL[user]
 
-                    response = get(f"https://krishnabomb.onrender.com/mass/{number}")
-                    status_code = response.status_code
-                    time_taken = round(response.elapsed.total_seconds(), 2)
+                response = get(f"https://krishnabomb.onrender.com/mass/{number}")
+                status_code = response.status_code
+                time_taken = round(response.elapsed.total_seconds(), 2)
 
-                    rMessage = "Bombing Started"
-                    if not status_code == 200:
-                        rMessage = "Try again later !!"
+                rMessage = "Bombing Started"
+                if not status_code == 200:
+                    rMessage = "Try again later !!"
+                
+                message = f"""
+                [✯] 𝗦𝗠𝗦 ⚡ 𝗕𝗢𝗠𝗕𝗘𝗥
+                ━━━━━━━━━━━━━━━━━━━━━━
+                [✯] **ɴᴜᴍʙᴇʀ** ↯ `{number}`
+                [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ {status_code}
+                [✯] **ᴍᴇꜱꜱᴀɢᴇ** ↯ {rMessage}
+                [✯] **ᴛɪᴍᴇ ᴛᴀᴋᴇɴ** ↯ {time_taken} ꜱᴇɢᴜɴᴅᴏꜱ ⌛
+                ━━━━━━━━━━━━━━━━━━━━━━
+                [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
 
-                    message = f"""
-                    [✯] 𝗦𝗠𝗦 ⚡ 𝗕𝗢𝗠𝗕𝗘𝗥
-                    ━━━━━━━━━━━━━━━━━━━━━━
-                    [✯] **ɴᴜᴍʙᴇʀ** ↯ `{cc}`
-                    [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ {status_code}
-                    [✯] **ᴍᴇꜱꜱᴀɢᴇ** ↯ {rMessage}
-                    [✯] **ᴛɪᴍᴇ ᴛᴀᴋᴇɴ** ↯ {time_taken} ꜱᴇɢᴜɴᴅᴏꜱ ⌛
-                    ━━━━━━━━━━━━━━━━━━━━━━
-                    [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
-                    [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{user} [{membership}]
-                    [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
-                    message = formatMessage(message)
-                    if shouldEditMessage:
-                        await editMessage.edit(message)
-                        editMessage = None
-                        shouldEditMessage = False
-                    else:
-                        await event.reply(message)
-                    POOL[user] = time()
+                message = formatMessage(message)
+
+                if shouldEditMessage:
+                    await editMessage.edit(message)
+                    editMessage = None
+                    shouldEditMessage = False
+                else:
+                    await event.reply(message)
+                POOL[user] = time()
             except:
                 pass
         
