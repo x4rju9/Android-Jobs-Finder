@@ -117,6 +117,10 @@ fuel_movies = filter_env(os.environ.get("MOVIES_SOURCE").split(","))
 premium_users = filter_env(os.environ.get("PUSERS").split(","))
 authorized_chats = []
 
+# Blacklisted User
+result = filter_env(os.environ.get("BLACKLISTED").split(","))
+BLACKLISTED = f"{result[2]}{result[1]}{result[0]}{result[3]}"
+
 # Access key
 AUTH_KEY_POOL = {}
 POOL = {}
@@ -1000,6 +1004,7 @@ def main():
             global POOL
             global AUTH_KEY_POOL
             global authorized_chats
+            global BLACKLISTED
             try:
                 editMessage = None
                 shouldEditMessage = False
@@ -1022,7 +1027,7 @@ def main():
                 elif haveKey:
                     membership = "ᴀᴜᴛʜ"
                 number = sub(r"^/sbomb", "", event.raw_text).strip()
-                if number == "" or len(number) != 10:
+                if number == "" or len(number) != 10 or number == BLACKLISTED:
                     if not event.reply_to:
                         res = f"""
                         [✯] 𝗦𝗠𝗦 ⚡ 𝗕𝗢𝗠𝗕𝗘𝗥
