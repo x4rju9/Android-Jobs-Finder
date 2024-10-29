@@ -1123,6 +1123,59 @@ def main():
         @client.on(events.NewMessage(pattern=sb_pattern))
         async def sms_bomber_handler(event):
             asyncio.create_task(sms_bomber(event))
+
+        api_pattern = r"^/api"
+        async def api_call(event):
+            try:
+                # Getting user info
+                user = await event.get_sender()
+                name = user.first_name
+                username = user.username
+                # Extracting question
+                url = sub(api_pattern, "", event.raw_text).strip()
+                if "" == url or len(url) <= 1:
+                    if not event.reply_to:
+                        res = f"""
+                        **NO URL FOUND**
+                        ━━━━━━━━━━━━━━━━
+                        {name} is the dumbest person on internet.
+                        ━━━━━━━━━━━━━━━━
+                        **ᴜʀʟ ʙʏ** ↯ @{username}"""
+                        res = formatMessage(res)
+                        await event.reply(res)
+                        return
+                    else:
+                        replied = await event.get_reply_message()
+                        url = sub(api_pattern, "", replied.raw_text).strip()
+                
+                if not "http" in url:
+                    url = "http://" + url
+
+                # Generating answer
+                response = get(url)
+                if response.status_code == 200:
+                    response = response.text
+                else:
+                    response = "404: invalid API url."
+                message_limit = 3000
+                if len(response) >= message_limit:
+                    response = response[:message_limit]
+
+                res = f"""
+                **{url}**
+                ━━━━━━━━━━━━━━━━
+                {response}
+                ━━━━━━━━━━━━━━━━
+                **ᴜʀʟ ʙʏ** ↯ @{username}"""
+                res = formatMessage(res)
+                print(res)
+                await event.reply(res)
+            except:
+                pass
+        
+        @client.on(events.NewMessage(pattern=api_pattern))
+        async def api_call_handler(event):
+            asyncio.create_task(api_call(event))
         
         # start bot
         client.start()
