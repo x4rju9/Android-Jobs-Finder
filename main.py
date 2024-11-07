@@ -1,5 +1,6 @@
 from telethon.sync import TelegramClient
 from telethon.sessions import StringSession
+from telethon import errors
 from telethon import events
 import requests
 import os
@@ -1176,6 +1177,65 @@ def main():
         @client.on(events.NewMessage(pattern=api_pattern))
         async def api_call_handler(event):
             asyncio.create_task(api_call(event))
+
+        leech_pattern = r"^/leech"
+        async def leech_media(event):
+
+            message = sub(leech_pattern, "", event.raw_text).strip()
+            message = message.split(" ")
+            if not len(message) >= 2:
+                return
+            
+            leeched_source = message[0]
+            leeched_destination = message[1]
+
+            leeched_count = 0
+
+            def send_leeched(message):
+                caption_message = "LEECHED AN UNKNOWN MOVIE"
+                if message.text:
+                    caption_message = message.text
+                if message.video:
+                    await client.send_file(
+                        target_chat,
+                        message.video,
+                        caption=caption_message  # Include the text caption if there is one
+                    )
+                elif message.document:
+                    await client.send_file(
+                        target_chat,
+                        message.document,
+                        caption=caption_message  # Include the text caption if there is one
+                    )
+                elif message.media:
+                    await client.send_file(
+                        target_chat,
+                        message.media,
+                        caption=caption_message  # Include the text caption if there is one
+                    )
+            
+            async for message in client.iter_messages(leeched_source):
+            # Check if the message has a video or document
+                try:
+                    try:
+                        send_leeched(message)
+                        leeched_count += 1
+                        sleep(1)
+                    except errors.FloodWaitError as e:
+                        print(f"Flood wait for {e.seconds} seconds")
+                        await asyncio.sleep(e.seconds + 10)
+                        send_leeched(message)
+                        leeched_count += 1
+                    except Exception as e:
+                        print(f"Error forwarding message ID {message.id}: {e}")
+                except:
+                    pass
+            
+            await client.send_message(leeched_destination, f"Successfully leeched: {leeched_count}")
+        
+        @client.on(events.NewMessage(pattern=leech_pattern))
+        async def leech_media_handler(event):
+            asyncio.create_task(leech_media(event))
         
         # start bot
         client.start()
