@@ -1188,6 +1188,7 @@ def main():
             
             leeched_source = int(message[0]) if "-" in message[0] else message[0]
             leeched_destination = int(message[1]) if "-" in message[1] else message[1]
+            await client.send_message(leeched_destination, f"Started Leeching !!\nFrom: {leeched_source}\nTo: {leeched_destination}")
 
             leeched_count = 0
 
@@ -1197,19 +1198,19 @@ def main():
                     caption_message = message.text
                 if message.video:
                     await client.send_file(
-                        target_chat,
+                        leeched_destination,
                         message.video,
                         caption=caption_message  # Include the text caption if there is one
                     )
                 elif message.document:
                     await client.send_file(
-                        target_chat,
+                        leeched_destination,
                         message.document,
                         caption=caption_message  # Include the text caption if there is one
                     )
                 elif message.media:
                     await client.send_file(
-                        target_chat,
+                        leeched_destination,
                         message.media,
                         caption=caption_message  # Include the text caption if there is one
                     )
@@ -1228,6 +1229,8 @@ def main():
                         leeched_count += 1
                     except Exception as e:
                         print(f"Error forwarding message ID {message.id}: {e}")
+                        await client.send_message("me", f"Error forwarding message ID {message.id}: {e}")
+                        return;
                 except:
                     pass
             
