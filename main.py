@@ -1186,8 +1186,8 @@ def main():
             if not len(message) >= 2:
                 return
             
-            leeched_source = message[0]
-            leeched_destination = message[1]
+            leeched_source = int(message[0]) if "-" in message[0] else message[0]
+            leeched_destination = int(message[1]) if "-" in message[1] else message[1]
 
             leeched_count = 0
 
