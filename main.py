@@ -1191,7 +1191,7 @@ def main():
 
             leeched_count = 0
 
-            def send_leeched(message):
+            async def send_leeched(message):
                 caption_message = "LEECHED AN UNKNOWN MOVIE"
                 if message.text:
                     caption_message = message.text
@@ -1218,13 +1218,13 @@ def main():
             # Check if the message has a video or document
                 try:
                     try:
-                        send_leeched(message)
+                        await send_leeched(message)
                         leeched_count += 1
                         sleep(1)
                     except errors.FloodWaitError as e:
                         print(f"Flood wait for {e.seconds} seconds")
                         await asyncio.sleep(e.seconds + 10)
-                        send_leeched(message)
+                        await send_leeched(message)
                         leeched_count += 1
                     except Exception as e:
                         print(f"Error forwarding message ID {message.id}: {e}")
