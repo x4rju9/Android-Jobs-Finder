@@ -1185,7 +1185,6 @@ def main():
             message = message.split(" ")
             shouldSkipMessages = False
             skipCount = 0
-            skipped_count = 0
             if len(message) >= 3:
                 shouldSkipMessages = True
                 try:
@@ -1241,8 +1240,8 @@ def main():
                 try:
                     try:
                         if shouldSkipMessages:
-                            if skipped_count <= skipCount:
-                                skipped_count += 1
+                            if message.id >= skipCount:
+                                print(f"Skipped forwarding message ID {message.id}")
                                 continue
                         leeched_count += await send_leeched(message)
                         sleep(10)
