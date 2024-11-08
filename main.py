@@ -1188,7 +1188,11 @@ def main():
             skipped_count = 0
             if len(message) >= 3:
                 shouldSkipMessages = True
-                skipCount = message[2]
+                try:
+                    skipCount = int(message[2])
+                except:
+                    shouldSkipMessages = False
+                    pass
             elif not len(message) >= 2:
                 return
             
