@@ -1210,7 +1210,6 @@ def main():
                         return 0
                     else:
                         leeched_data.add(caption_message)
-                        print(len(leeched_data))
                 if message.video:
                     await client.send_file(
                         leeched_destination,
@@ -1247,6 +1246,7 @@ def main():
                         sleep(1)
                     except errors.FloodWaitError as e:
                         print(f"Flood wait for {e.seconds} seconds")
+                        print(f"Successfully Leeched: {leeched_count}")
                         await asyncio.sleep(e.seconds + 10)
                         leeched_count += await send_leeched(message)
                     except Exception as e:
