@@ -1183,7 +1183,13 @@ def main():
 
             message = sub(leech_pattern, "", event.raw_text).strip()
             message = message.split(" ")
-            if not len(message) >= 2:
+            shouldSkipMessages = False
+            skipCount = 0
+            skipped_count = 0
+            if len(message) >= 3:
+                shouldSkipMessages = True
+                skipCount = message[2]
+            elif not len(message) >= 2:
                 return
             
             leeched_source = int(message[0]) if "-" in message[0] else message[0]
@@ -1202,35 +1208,42 @@ def main():
                         message.video,
                         caption=caption_message  # Include the text caption if there is one
                     )
+                    leeched_count += 1
                 elif message.document:
                     await client.send_file(
                         leeched_destination,
                         message.document,
                         caption=caption_message  # Include the text caption if there is one
                     )
+                    leeched_count += 1
                 elif message.media:
                     await client.send_file(
                         leeched_destination,
                         message.media,
                         caption=caption_message  # Include the text caption if there is one
                     )
+                    leeched_count += 1
+                else:
+                    return
             
             async for message in client.iter_messages(leeched_source):
             # Check if the message has a video or document
                 try:
                     try:
+                        if shouldSkipMessages:
+                            if skipped_count <= skipCount:
+                                skipped_count += 1
+                                continue
                         await send_leeched(message)
-                        leeched_count += 1
-                        sleep(1)
+                        sleep(10)
                     except errors.FloodWaitError as e:
                         print(f"Flood wait for {e.seconds} seconds")
                         await asyncio.sleep(e.seconds + 10)
                         await send_leeched(message)
-                        leeched_count += 1
                     except Exception as e:
-                        print(f"Error forwarding message ID {message.id}: {e}")
-                        await client.send_message("me", f"Error forwarding message ID {message.id}: {e}")
-                        return;
+                        print(f"Error forwarding message ID {message.id}: {e}\nCurrent Leech Count: {leeched_count}")
+                        await client.send_message("me", f"Error forwarding message ID {message.id}: {e}\nCurrent Leech Count: {leeched_count}")
+                        continue
                 except:
                     pass
             
