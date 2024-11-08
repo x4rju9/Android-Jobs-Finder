@@ -1212,23 +1212,23 @@ def main():
                         message.video,
                         caption=caption_message  # Include the text caption if there is one
                     )
-                    leeched_count += 1
+                    return 1
                 elif message.document:
                     await client.send_file(
                         leeched_destination,
                         message.document,
                         caption=caption_message  # Include the text caption if there is one
                     )
-                    leeched_count += 1
+                    return 1
                 elif message.media:
                     await client.send_file(
                         leeched_destination,
                         message.media,
                         caption=caption_message  # Include the text caption if there is one
                     )
-                    leeched_count += 1
+                    return 1
                 else:
-                    return
+                    return 0
             
             async for message in client.iter_messages(leeched_source):
             # Check if the message has a video or document
@@ -1238,12 +1238,12 @@ def main():
                             if skipped_count <= skipCount:
                                 skipped_count += 1
                                 continue
-                        await send_leeched(message)
+                        leeched_count += await send_leeched(message)
                         sleep(10)
                     except errors.FloodWaitError as e:
                         print(f"Flood wait for {e.seconds} seconds")
                         await asyncio.sleep(e.seconds + 10)
-                        await send_leeched(message)
+                        leeched_count += await send_leeched(message)
                     except Exception as e:
                         print(f"Error forwarding message ID {message.id}: {e}\nCurrent Leech Count: {leeched_count}")
                         await client.send_message("me", f"Error forwarding message ID {message.id}: {e}\nCurrent Leech Count: {leeched_count}")
