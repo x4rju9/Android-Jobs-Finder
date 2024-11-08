@@ -1201,11 +1201,17 @@ def main():
             await client.send_message(leeched_destination, f"Started Leeching !!\nFrom: {leeched_source}\nTo: {leeched_destination}")
 
             leeched_count = 0
+            leeched_data = {}
 
             async def send_leeched(message):
+                global leeched_data
                 caption_message = "LEECHED AN UNKNOWN MOVIE"
                 if message.text:
                     caption_message = message.text
+                    if leeched_data.get(caption_message):
+                        return 0
+                    else:
+                        leeched_data[caption_message] = True
                 if message.video:
                     await client.send_file(
                         leeched_destination,
