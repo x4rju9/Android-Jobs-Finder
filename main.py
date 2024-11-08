@@ -1244,7 +1244,7 @@ def main():
                                 print(f"Skipped forwarding message ID {message.id}")
                                 continue
                         leeched_count += await send_leeched(message)
-                        sleep(10)
+                        sleep(1)
                     except errors.FloodWaitError as e:
                         print(f"Flood wait for {e.seconds} seconds")
                         await asyncio.sleep(e.seconds + 10)
