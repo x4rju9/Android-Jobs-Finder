@@ -1183,8 +1183,12 @@ def main():
 
             message = sub(leech_pattern, "", event.raw_text).strip()
             message = message.split(" ")
+            caption_category = ""
             shouldSkipMessages = False
             skipCount = 0
+            if len(message) >= 4:
+                caption_category = message[3]
+            
             if len(message) >= 3:
                 shouldSkipMessages = True
                 try:
@@ -1199,67 +1203,67 @@ def main():
             leeched_destination = int(message[1]) if "-" in message[1] else message[1]
             await client.send_message(leeched_destination, f"Started Leeching !!\nFrom: {leeched_source}\nTo: {leeched_destination}")
 
-            leeched_count = 0
-            leeched_data = set()
+            snached_count = 0
+            snached_data = set()
 
             async def send_leeched(message):
-                caption_message = f"{leeched_count}: UNTITLED"
+                caption_message = f"{snached_count + 1}: Untitled {caption_category}"
                 if message.text:
                     caption_message = message.text
-                    if caption_message in leeched_data:
+                    if caption_message in snached_data:
                         return 0
                     else:
-                        leeched_data.add(caption_message)
+                        snached_data.add(caption_message)
+                
                 if message.sticker:
                     return 0
                 elif message.video:
                     await client.send_file(
                         leeched_destination,
                         message.video,
-                        caption=caption_message  # Include the text caption if there is one
+                        caption=caption_message
                     )
                     return 1
                 elif message.document:
                     await client.send_file(
                         leeched_destination,
                         message.document,
-                        caption=caption_message  # Include the text caption if there is one
+                        caption=caption_message
                     )
                     return 1
                 elif message.media:
                     await client.send_file(
                         leeched_destination,
                         message.media,
-                        caption=caption_message  # Include the text caption if there is one
+                        caption=caption_message
                     )
                     return 1
                 else:
                     return 0
             
             async for message in client.iter_messages(leeched_source):
-            # Check if the message has a video or document
                 try:
                     try:
                         if shouldSkipMessages:
                             if message.id >= skipCount:
                                 print(f"Skipped forwarding message ID {message.id}")
                                 continue
-                        leeched_count += await send_leeched(message)
+                        snached_count += await send_leeched(message)
                         sleep(1)
                     except errors.FloodWaitError as e:
                         print(f"Flood wait for {e.seconds} seconds")
-                        print(f"Successfully Leeched: {leeched_count}")
+                        print(f"Successfully Snached: {snached_count}")
                         await asyncio.sleep(e.seconds + 10)
-                        leeched_count += await send_leeched(message)
+                        snached_count += await send_leeched(message)
                     except Exception as e:
-                        print(f"Error forwarding message ID {message.id}: {e}\nCurrent Leech Count: {leeched_count}")
-                        await client.send_message("me", f"Error forwarding message ID {message.id}: {e}\nCurrent Leech Count: {leeched_count}")
+                        print(f"Error forwarding message ID {message.id}: {e}\nCurrent Snach Count: {snached_count}")
+                        await client.send_message("me", f"Error forwarding message ID {message.id}: {e}\nCurrent Snach Count: {snached_count}")
                         continue
                 except:
                     pass
             
-            await client.send_message(leeched_destination, f"Successfully Snached: {leeched_count}")
-            print(f"Successfully Snached: {leeched_count}")
+            await client.send_message(leeched_destination, f"Successfully Snached: {snached_count}")
+            print(f"Successfully Snached: {snached_count}")
         
         @client.on(events.NewMessage(pattern=leech_pattern))
         async def leech_media_handler(event):
