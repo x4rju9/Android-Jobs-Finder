@@ -1241,7 +1241,7 @@ def main():
                 else:
                     return 0
             
-            async for message in client.iter_messages(leeched_source):
+            async for message in client.iter_messages(leeched_source, reverse = True):
                 try:
                     try:
                         if shouldSkipMessages:
