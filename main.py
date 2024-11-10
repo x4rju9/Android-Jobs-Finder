@@ -1203,14 +1203,16 @@ def main():
             leeched_data = set()
 
             async def send_leeched(message):
-                caption_message = "LEECHED AN UNKNOWN MOVIE"
+                caption_message = f"{leeched_count}: UNTITLED"
                 if message.text:
                     caption_message = message.text
                     if caption_message in leeched_data:
                         return 0
                     else:
                         leeched_data.add(caption_message)
-                if message.video:
+                if message.sticker:
+                    return 0
+                elif message.video:
                     await client.send_file(
                         leeched_destination,
                         message.video,
