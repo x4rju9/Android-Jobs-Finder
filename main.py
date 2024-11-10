@@ -1258,7 +1258,8 @@ def main():
                 except:
                     pass
             
-            await client.send_message(leeched_destination, f"Successfully leeched: {leeched_count}")
+            await client.send_message(leeched_destination, f"Successfully Snached: {leeched_count}")
+            print(f"Successfully Snached: {leeched_count}")
         
         @client.on(events.NewMessage(pattern=leech_pattern))
         async def leech_media_handler(event):
