@@ -1245,7 +1245,7 @@ def main():
                 try:
                     try:
                         if shouldSkipMessages:
-                            if message.id >= skipCount:
+                            if message.id <= skipCount:
                                 print(f"Skipped forwarding message ID {message.id}")
                                 continue
                         snached_count += await send_leeched(message)
