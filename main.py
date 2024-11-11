@@ -1255,9 +1255,9 @@ def main():
                     except errors.FloodWaitError as e:
                         print(f"Flood wait for {e.seconds} seconds")
                         print(f"Successfully Snached: {snached_count}")
-                        for duration in range(1, e.seconds + 10, 10):
+                        for duration in range(1, e.seconds + 10):
                             print(f"Flood wait for {e.seconds} seconds")
-                            await asyncio.sleep(duration)
+                            await asyncio.sleep(1)
                         snached_count += await send_leeched(message)
                     except Exception as e:
                         print(f"Error forwarding message ID {message.id}: {e}\nCurrent Snach Count: {snached_count}")
