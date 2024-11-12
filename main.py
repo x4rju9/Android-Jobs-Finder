@@ -1180,30 +1180,33 @@ def main():
         async def api_call_handler(event):
             asyncio.create_task(api_call(event))
 
-        leech_pattern = r"^/leech"
-        async def leech_media(event):
+        snach_pattern = r"^/snach"
+        async def snach_media(event):
 
-            message = sub(leech_pattern, "", event.raw_text).strip()
+            message = sub(snach_pattern, "", event.raw_text).strip()
             message = message.split(" ")
             caption_category = ""
             shouldSkipMessages = False
-            skipCount = 0
+            skip_message_id = 0
             if len(message) >= 4:
                 caption_category = message[3]
             
             if len(message) >= 3:
                 shouldSkipMessages = True
                 try:
-                    skipCount = int(message[2])
+                    skip_message_id = int(message[2])
                 except:
                     shouldSkipMessages = False
                     pass
             elif not len(message) >= 2:
                 return
             
-            leeched_source = int(message[0]) if "-" in message[0] else message[0]
-            leeched_destination = int(message[1]) if "-" in message[1] else message[1]
-            await client.send_message(leeched_destination, f"Started Leeching !!\nFrom: {leeched_source}\nTo: {leeched_destination}")
+            snached_source = int(message[0]) if "-" in message[0] else message[0]
+            snached_destination = int(message[1]) if "-" in message[1] else message[1]
+            if shouldSkipMessages:
+                await client.send_message(snached_destination, f"Started Snatching !!\nFrom: {snached_source}\nTo: {snached_destination}\nSkip count: {skip_message_id}")
+            else:
+                await client.send_message(snached_destination, f"Started Snatching !!\nFrom: {snached_source}\nTo: {snached_destination}")
 
             snached_count = 0
             snached_data = set()
@@ -1221,21 +1224,21 @@ def main():
                     return 0
                 elif message.video:
                     await client.send_file(
-                        leeched_destination,
+                        snached_destination,
                         message.video,
                         caption=caption_message
                     )
                     return 1
                 elif message.document:
                     await client.send_file(
-                        leeched_destination,
+                        snached_destination,
                         message.document,
                         caption=caption_message
                     )
                     return 1
                 elif message.media:
                     await client.send_file(
-                        leeched_destination,
+                        snached_destination,
                         message.media,
                         caption=caption_message
                     )
@@ -1243,11 +1246,11 @@ def main():
                 else:
                     return 0
             
-            async for message in client.iter_messages(leeched_source, reverse = True):
+            async for message in client.iter_messages(snached_source, reverse = True):
                 try:
                     try:
                         if shouldSkipMessages:
-                            if message.id <= skipCount:
+                            if message.id <= skip_message_id:
                                 print(f"Skipped forwarding message ID {message.id}")
                                 continue
                         snached_count += await send_leeched(message)
@@ -1266,12 +1269,28 @@ def main():
                 except:
                     pass
             
-            await client.send_message(leeched_destination, f"Successfully Snached: {snached_count}")
+            await client.send_message(snached_destination, f"Successfully Snached: {snached_count}")
             print(f"Successfully Snached: {snached_count}")
         
-        @client.on(events.NewMessage(pattern=leech_pattern))
-        async def leech_media_handler(event):
-            asyncio.create_task(leech_media(event))
+        @client.on(events.NewMessage(pattern=snach_pattern))
+        async def snach_media_handler(event):
+            asyncio.create_task(snach_media(event))
+        
+        shutdown_pattern = r"^/shutdown"
+        @client.on(events.NewMessage(pattern=shutdown_pattern))
+        async def grant_premium(event):
+            try:
+                user = await event.get_sender()
+                user = user.username
+
+                if not user == "x4rju9":
+                    await event.reply("ᴡʜᴏ ᴅᴏ ʏᴏᴜ ᴛʜɪɴᴋ ʏᴏᴜ'ʀᴇ ‼")
+                    return
+                
+                exit()
+
+            except:
+                pass
         
         # start bot
         client.start()
