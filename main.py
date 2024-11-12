@@ -13,6 +13,7 @@ import asyncio
 from time import sleep, time
 from keep_alive import keep_alive
 from requests import get
+from uuid import uuid4
 
 # Credentials.
 api_id = int(os.environ.get("API_ID"))
@@ -21,6 +22,8 @@ ss = os.environ.get("STRING_SESSION")
 
 # Main
 
+def generate_unique_id():
+    return str(uuid4())
 
 def formatMessage(text):
     splited = text.split("\n")
@@ -125,6 +128,10 @@ BLACKLISTED = f"{result[2]}{result[1]}{result[0]}{result[3]}"
 # Access key
 AUTH_KEY_POOL = {}
 POOL = {}
+
+# Active Threads
+active_tasks = {}
+TASK_ID = "NULL"
 
 # Gemini Access Key
 GEMINI_ACCESS_KEY = os.environ.get("GEMINI_KEY").strip()
@@ -372,7 +379,13 @@ def main():
                         await event.reply(res)
                         return
                 
+                await client.send_message("me", f"Task id: `{TASK_ID}`\nFor Message:\n{event.raw_text}")
+                
                 for result in results:
+
+                    if asyncio.current_task().cancelled():
+                            print("Task has been cancelled.")
+                            break
 
                     if not POOL.get(user) == None:
                         cooldown = time() - POOL.get(user)
@@ -443,11 +456,15 @@ def main():
                         await event.reply(res)
                     POOL[user] = time()
             except:
-                pass
+                print("Task must be cancelled.")
         
         @client.on(events.NewMessage(pattern=r"^/crunchy"))
         async def crunchy_handler(event):
-            asyncio.create_task(crunchy_gate(event))
+            global TASK_ID
+            global active_tasks
+            task = asyncio.create_task(crunchy_gate(event))
+            TASK_ID = generate_unique_id()
+            active_tasks[TASK_ID] = task
         
         async def ahav_gate(event):
             global POOL
@@ -539,8 +556,14 @@ def main():
                         await event.reply(res)
                         return
                 
+                await client.send_message("me", f"Task id: `{TASK_ID}`\nFor Message:\n{event.raw_text}")
+                
                 for result in results:
 
+                    if asyncio.current_task().cancelled():
+                            print("Task has been cancelled.")
+                            break
+                    
                     if not POOL.get(user) == None:
                         cooldown = time() - POOL.get(user)
                         m_cooldown = 10
@@ -610,11 +633,15 @@ def main():
                         await event.reply(res)
                     POOL[user] = time()
             except:
-                pass
+                print("Task must be cancelled.")
         
         @client.on(events.NewMessage(pattern=r"^/ahav"))
         async def ahav_handler(event):
-            asyncio.create_task(ahav_gate(event))
+            global TASK_ID
+            global active_tasks
+            task = asyncio.create_task(ahav_gate(event))
+            TASK_ID = generate_unique_id()
+            active_tasks[TASK_ID] = task
 
         gemini_question_pattern = r"^(?:/google|/kulfi|/ask)"
         @client.on(events.NewMessage(pattern=gemini_question_pattern))
@@ -785,7 +812,14 @@ def main():
                         return
                 
                 cc, mm, yy, cvv = "", "", "", ""
+
+                await client.send_message("me", f"Task id: `{TASK_ID}`\nFor Message:\n{event.raw_text}")
+
                 for match in results:
+
+                    if asyncio.current_task().cancelled():
+                            print("Task has been cancelled.")
+                            break
                     
                     if not POOL.get(user) == None:
                         cooldown = time() - POOL.get(user)
@@ -852,12 +886,16 @@ def main():
                         await event.reply(message)
                     POOL[user] = time()
             except:
-                pass
+                print("Task must be cancelled.")
         
         flex_pattern = r"^/flex"
         @client.on(events.NewMessage(pattern=flex_pattern))
         async def charge_five_dollar(event):
-            asyncio.create_task(flex_charge(event))
+            global TASK_ID
+            global active_tasks
+            task = asyncio.create_task(flex_charge(event))
+            TASK_ID = generate_unique_id()
+            active_tasks[TASK_ID] = task
         
         append_pattern = r"^/append"
         @client.on(events.NewMessage(pattern=append_pattern))
@@ -1150,7 +1188,11 @@ def main():
         sb_pattern = r"^/sbomb"
         @client.on(events.NewMessage(pattern=sb_pattern))
         async def sms_bomber_handler(event):
-            asyncio.create_task(sms_bomber(event))
+            global TASK_ID
+            global active_tasks
+            task = asyncio.create_task(sms_bomber(event))
+            TASK_ID = generate_unique_id()
+            active_tasks[TASK_ID] = task
 
         api_pattern = r"^/api"
         async def api_call(event):
@@ -1203,7 +1245,11 @@ def main():
         
         @client.on(events.NewMessage(pattern=api_pattern))
         async def api_call_handler(event):
-            asyncio.create_task(api_call(event))
+            global TASK_ID
+            global active_tasks
+            task = asyncio.create_task(api_call(event))
+            TASK_ID = generate_unique_id()
+            active_tasks[TASK_ID] = task
 
         snach_pattern = r"^/snach"
         async def snach_media(event):
@@ -1229,9 +1275,9 @@ def main():
             snached_source = int(message[0]) if "-" in message[0] else message[0]
             snached_destination = int(message[1]) if "-" in message[1] else message[1]
             if shouldSkipMessages:
-                await client.send_message(snached_destination, f"Started Snatching !!\nFrom: {snached_source}\nTo: {snached_destination}\nSkip count: {skip_message_id}")
+                await client.send_message(snached_destination, f"Started Snatching !!\nFrom: {snached_source}\nTo: {snached_destination}\nSkip count: {skip_message_id}\nTask id: `{TASK_ID}`")
             else:
-                await client.send_message(snached_destination, f"Started Snatching !!\nFrom: {snached_source}\nTo: {snached_destination}")
+                await client.send_message(snached_destination, f"Started Snatching !!\nFrom: {snached_source}\nTo: {snached_destination}\nTask id: `{TASK_ID}`")
 
             snached_count = 0
             snached_data = set()
@@ -1271,8 +1317,8 @@ def main():
                 else:
                     return 0
             
-            async for message in client.iter_messages(snached_source, reverse = True):
-                try:
+            try:
+                async for message in client.iter_messages(snached_source, reverse = True):
                     try:
                         if shouldSkipMessages:
                             if message.id <= skip_message_id:
@@ -1280,7 +1326,10 @@ def main():
                                 continue
                         print(f"forwarding message ID {message.id}\nCurrent Snach Count: {snached_count + 1}")
                         snached_count += await send_leeched(message)
-                        sleep(1)
+                        await asyncio.sleep(1)
+                        if asyncio.current_task().cancelled():
+                            print("Task has been cancelled.")
+                            break
                     except errors.FloodWaitError as e:
                         print(f"Flood wait for {e.seconds} seconds")
                         print(f"Successfully Snached: {snached_count}")
@@ -1292,15 +1341,36 @@ def main():
                         print(f"Error forwarding message ID {message.id}: {e}\nCurrent Snach Count: {snached_count}")
                         await client.send_message("me", f"Error forwarding message ID {message.id}: {e}\nCurrent Snach Count: {snached_count}")
                         continue
-                except:
-                    pass
+            except:
+                print("Task must be cancelled.")
             
             await client.send_message(snached_destination, f"Successfully Snached: {snached_count}")
             print(f"Successfully Snached: {snached_count}")
         
         @client.on(events.NewMessage(pattern=snach_pattern))
         async def snach_media_handler(event):
-            asyncio.create_task(snach_media(event))
+            global TASK_ID
+            global active_tasks
+            task = asyncio.create_task(snach_media(event))
+            print(TASK_ID)
+            TASK_ID = generate_unique_id()
+            print(TASK_ID)
+            active_tasks[TASK_ID] = task
+        
+        cancel_task_pattern = r"^/cancel"
+        @client.on(events.NewMessage(pattern=cancel_task_pattern))
+        async def cancel_task(event):
+
+            thread_id = sub(cancel_task_pattern, "", event.raw_text).strip()
+            task = active_tasks.get(thread_id)
+
+            if task:
+                task.cancel()
+                print(f"Task with id: {thread_id} has been cancelled.")
+                await event.reply(f"Task with id: {thread_id} has been cancelled.")
+            else:
+                print(f"No active task found with id {thread_id}")
+                await event.reply(f"No active task found with id {thread_id}")
         
         shutdown_pattern = r"^/shutdown"
         @client.on(events.NewMessage(pattern=shutdown_pattern))
