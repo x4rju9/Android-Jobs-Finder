@@ -1289,6 +1289,7 @@ def main():
                     return
 
                 print("Shutting Down")
+                await event.reply("Shutting Down")
                 exit()
 
             except:
