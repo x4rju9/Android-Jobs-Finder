@@ -998,8 +998,33 @@ def main():
         @client.on(events.MessageEdited(chats=fuel_movies))
         async def find_movies(event):
             try:
-                if event.video or event.document:
-                    await client.forward_messages(-1002002129675, event.message)
+                message = event.message
+
+                caption_message = f"{message.id} Untitled"
+                if message.text:
+                    caption_message = message.text
+                
+                if message.sticker:
+                    print(f"Skipped Message with id: {message.id}")
+                    return
+                elif message.video:
+                    await client.send_file(
+                        -1002002129675,
+                        message.video,
+                        caption=caption_message
+                    )
+                elif message.document:
+                    await client.send_file(
+                        -1002002129675,
+                        message.document,
+                        caption=caption_message
+                    )
+                elif message.media:
+                    await client.send_file(
+                        -1002002129675,
+                        message.media,
+                        caption=caption_message
+                    )
             except:
                 pass
 
@@ -1253,7 +1278,7 @@ def main():
                             if message.id <= skip_message_id:
                                 print(f"Skipped forwarding message ID {message.id}")
                                 continue
-                        print(f"forwarding message ID {message.id}: {e}\nCurrent Snach Count: {snached_count + 1}")
+                        print(f"forwarding message ID {message.id}\nCurrent Snach Count: {snached_count + 1}")
                         snached_count += await send_leeched(message)
                         sleep(1)
                     except errors.FloodWaitError as e:
