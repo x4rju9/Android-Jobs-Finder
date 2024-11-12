@@ -1287,13 +1287,13 @@ def main():
                 if not user == "x4rju9":
                     await event.reply("ᴡʜᴏ ᴅᴏ ʏᴏᴜ ᴛʜɪɴᴋ ʏᴏᴜ'ʀᴇ ‼")
                     return
-
-                print("Shutting Down")
+                
                 await event.reply("Shutting Down")
-                exit()
 
             except:
                 pass
+            print("Shutting Down")
+            exit()
         
         # start bot
         client.start()
