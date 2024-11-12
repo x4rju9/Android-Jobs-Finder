@@ -1253,6 +1253,7 @@ def main():
                             if message.id <= skip_message_id:
                                 print(f"Skipped forwarding message ID {message.id}")
                                 continue
+                        print(f"forwarding message ID {message.id}: {e}\nCurrent Snach Count: {snached_count + 1}")
                         snached_count += await send_leeched(message)
                         sleep(1)
                     except errors.FloodWaitError as e:
@@ -1286,7 +1287,8 @@ def main():
                 if not user == "x4rju9":
                     await event.reply("ᴡʜᴏ ᴅᴏ ʏᴏᴜ ᴛʜɪɴᴋ ʏᴏᴜ'ʀᴇ ‼")
                     return
-                
+
+                print("Shutting Down")
                 exit()
 
             except:
