@@ -270,8 +270,8 @@ def main():
 
                 if "android" in result:
                     await client.send_message("x4rju9", job, link_preview=False)
-                elif "full_stack" in result:
-                    await client.send_message(-1002236063557, job, link_preview=False)
+                #elif "full_stack" in result:
+                #    await client.send_message(-1002236063557, job, link_preview=False)
             except:
                 pass
 
@@ -645,6 +645,7 @@ def main():
             TASK_ID = generate_unique_id()
             active_tasks[TASK_ID] = task
 
+        '''
         gemini_question_pattern = r"^(?:/google|/kulfi|/ask)"
         @client.on(events.NewMessage(pattern=gemini_question_pattern))
         async def gemini_chat(event):
@@ -682,8 +683,9 @@ def main():
                 await event.reply(res)
             except:
                 pass
-        
+        '''
 
+        '''
         grammer_pattern = r"^/grammer"
         @client.on(events.NewMessage(pattern=grammer_pattern))
         async def check_grammer(event):
@@ -722,6 +724,7 @@ def main():
                 await event.reply(res)
             except:
                 pass
+        '''
         
         async def flex_charge(event):
             global POOL
@@ -967,7 +970,7 @@ def main():
                 user2 = sub(grant_auth_pattern, "", event.raw_text).strip()
                 status = False
                 random_key = f"ACCESS {generate_keys()}"
-                if "" == user2 or len(user2) <= 1:
+                if "" == user2 or len(user2) <= 0:
                     if not event.reply_to:
                         if event.is_group:
                             authorized_chats.append(event.chat_id)
@@ -1253,10 +1256,10 @@ def main():
             TASK_ID = generate_unique_id()
             active_tasks[TASK_ID] = task
 
-        snach_pattern = r"^/snach"
-        async def snach_media(event):
+        snatch_pattern = r"^/snatch"
+        async def snatch_media(event):
 
-            message = sub(snach_pattern, "", event.raw_text).strip()
+            message = sub(snatch_pattern, "", event.raw_text).strip()
             message = message.split(" ")
             caption_category = ""
             shouldSkipMessages = False
@@ -1274,44 +1277,44 @@ def main():
             elif not len(message) >= 2:
                 return
             
-            snached_source = int(message[0]) if "-" in message[0] else message[0]
-            snached_destination = int(message[1]) if "-" in message[1] else message[1]
+            snatched_source = int(message[0]) if "-" in message[0] else message[0]
+            snatched_destination = int(message[1]) if "-" in message[1] else message[1]
             if shouldSkipMessages:
-                await client.send_message(snached_destination, f"Started Snatching !!\nFrom: {snached_source}\nTo: {snached_destination}\nSkip count: {skip_message_id}\nTask id: `{TASK_ID}`")
+                await client.send_message(snatched_destination, f"Started Snatching !!\nFrom: {snatched_source}\nTo: {snatched_destination}\nSkip count: {skip_message_id}\nTask id: `{TASK_ID}`")
             else:
-                await client.send_message(snached_destination, f"Started Snatching !!\nFrom: {snached_source}\nTo: {snached_destination}\nTask id: `{TASK_ID}`")
+                await client.send_message(snatched_destination, f"Started Snatching !!\nFrom: {snatched_source}\nTo: {snatched_destination}\nTask id: `{TASK_ID}`")
 
-            snached_count = 0
-            snached_data = set()
+            snatched_count = 0
+            snatched_data = set()
 
             async def send_leeched(message):
-                caption_message = f"{snached_count + 1}: Untitled {caption_category}"
+                caption_message = f"{snatched_count + 1}: Untitled {caption_category}"
                 if message.text:
                     caption_message = message.text
-                    if caption_message in snached_data:
+                    if caption_message in snatched_data:
                         return 0
                     else:
-                        snached_data.add(caption_message)
+                        snatched_data.add(caption_message)
                 
                 if message.sticker:
                     return 0
                 elif message.video:
                     await client.send_file(
-                        snached_destination,
+                        snatched_destination,
                         message.video,
                         caption=caption_message
                     )
                     return 1
                 elif message.document:
                     await client.send_file(
-                        snached_destination,
+                        snatched_destination,
                         message.document,
                         caption=caption_message
                     )
                     return 1
                 elif message.media:
                     await client.send_file(
-                        snached_destination,
+                        snatched_destination,
                         message.media,
                         caption=caption_message
                     )
@@ -1320,40 +1323,40 @@ def main():
                     return 0
             
             try:
-                async for message in client.iter_messages(snached_source, reverse = True):
+                async for message in client.iter_messages(snatched_source, reverse = True):
                     try:
                         if shouldSkipMessages:
                             if message.id <= skip_message_id:
                                 print(f"Skipped forwarding message ID {message.id}")
                                 continue
-                        print(f"forwarding message ID {message.id}\nCurrent Snach Count: {snached_count + 1}")
-                        snached_count += await send_leeched(message)
+                        print(f"forwarding message ID {message.id}\nCurrent Snach Count: {snatched_count + 1}")
+                        snatched_count += await send_leeched(message)
                         await asyncio.sleep(1)
                         if asyncio.current_task().cancelled():
                             print("Task has been cancelled.")
                             break
                     except errors.FloodWaitError as e:
                         print(f"Flood wait for {e.seconds} seconds")
-                        print(f"Successfully Snached: {snached_count}")
+                        print(f"Successfully Snached: {snatched_count}")
                         for duration in range(1, e.seconds + 10):
                             print(f"Flood wait for {e.seconds} seconds")
                             await asyncio.sleep(1)
-                        snached_count += await send_leeched(message)
+                        snatched_count += await send_leeched(message)
                     except Exception as e:
-                        print(f"Error forwarding message ID {message.id}: {e}\nCurrent Snach Count: {snached_count}")
-                        await client.send_message("me", f"Error forwarding message ID {message.id}: {e}\nCurrent Snach Count: {snached_count}")
+                        print(f"Error forwarding message ID {message.id}: {e}\nCurrent Snach Count: {snatched_count}")
+                        await client.send_message("me", f"Error forwarding message ID {message.id}: {e}\nCurrent Snach Count: {snatched_count}")
                         continue
             except:
                 print("Task must be cancelled.")
             
-            await client.send_message(snached_destination, f"Successfully Snached: {snached_count}")
-            print(f"Successfully Snached: {snached_count}")
+            await client.send_message(snatched_destination, f"Successfully Snached: {snatched_count}")
+            print(f"Successfully Snached: {snatched_count}")
         
-        @client.on(events.NewMessage(pattern=snach_pattern))
-        async def snach_media_handler(event):
+        @client.on(events.NewMessage(pattern=snatch_pattern))
+        async def snatch_media_handler(event):
             global TASK_ID
             global active_tasks
-            task = asyncio.create_task(snach_media(event))
+            task = asyncio.create_task(snatch_media(event))
             print(TASK_ID)
             TASK_ID = generate_unique_id()
             print(TASK_ID)
@@ -1395,7 +1398,6 @@ def main():
         # start bot
         client.start()
         client.run_until_disconnected()
-
 
 if __name__ == "__main__":
     keep_alive()
