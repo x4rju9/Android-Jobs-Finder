@@ -134,10 +134,12 @@ active_tasks = {}
 TASK_ID = "NULL"
 
 # Gemini Access Key
+"""
 GEMINI_ACCESS_KEY = os.environ.get("GEMINI_KEY").strip()
 gemini.configure(api_key=GEMINI_ACCESS_KEY)
 model = gemini.GenerativeModel('gemini-pro')
 model.generate_content("Hello There!")
+"""
 
 # Filter Credit Cards From Each Message.
 def filter_pattern(message):
