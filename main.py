@@ -1287,43 +1287,6 @@ def main():
             snatched_count = 0
             snatched_data = set()
             
-            '''
-            async def send_leeched(message):
-                caption_message = f"{snatched_count + 1}: Untitled {caption_category}"
-                if message.text:
-                    caption_message = message.text
-                    if caption_message in snatched_data:
-                        return 0
-                    else:
-                        snatched_data.add(caption_message)
-                
-                if message.sticker:
-                    return 0
-                elif message.video:
-                    await client.send_file(
-                        snatched_destination,
-                        message.video,
-                        caption=caption_message
-                    )
-                    return 1
-                elif message.document:
-                    await client.send_file(
-                        snatched_destination,
-                        message.document,
-                        caption=caption_message
-                    )
-                    return 1
-                elif message.media:
-                    await client.send_file(
-                        snatched_destination,
-                        message.media,
-                        caption=caption_message
-                    )
-                    return 1
-                else:
-                    return 0
-            '''
-            
             async def send_leeched(message):
                 try:
                     # Default caption
@@ -1335,6 +1298,8 @@ def main():
                         if caption_message in snatched_data:
                             return 0  # Duplicate caption
                         snatched_data.add(caption_message)
+                    
+                    print(caption_message)
                     
                     # Skip stickers
                     if message.sticker:
