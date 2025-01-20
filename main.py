@@ -1286,7 +1286,8 @@ def main():
 
             snatched_count = 0
             snatched_data = set()
-
+            
+            '''
             async def send_leeched(message):
                 caption_message = f"{snatched_count + 1}: Untitled {caption_category}"
                 if message.text:
@@ -1320,6 +1321,56 @@ def main():
                     )
                     return 1
                 else:
+                    return 0
+            '''
+            
+            async def send_leeched(message):
+                try:
+                    # Default caption
+                    caption_message = f"{snatched_count + 1}: Untitled {caption_category}"
+                    
+                    # Handle message text
+                    if message.text:
+                        caption_message = message.text
+                        if caption_message in snatched_data:
+                            return 0  # Duplicate caption
+                        snatched_data.add(caption_message)
+                    
+                    # Skip stickers
+                    if message.sticker:
+                        return 0
+            
+                    # Attempt to send as document first
+                    file_to_send = None
+                    if message.video:
+                        file_to_send = message.video
+                    elif message.media:
+                        file_to_send = message.media
+            
+                    if file_to_send:
+                        try:
+                            # Attempt to send as a document
+                            await client.send_file(
+                                snatched_destination,
+                                file=file_to_send,
+                                force_document=True,  # Ensures file is sent as a document
+                                caption=caption_message
+                            )
+                            return 1
+                        except Exception as e:
+                            print(f"Failed to send as document: {e}")
+                            # Fallback to original format
+                            await client.send_file(
+                                snatched_destination,
+                                file=file_to_send,
+                                caption=caption_message
+                            )
+                            return 1
+            
+                    # Fallback case
+                    return 0
+                except Exception as e:
+                    print(f"Error in send_leeched: {e}")
                     return 0
             
             try:
