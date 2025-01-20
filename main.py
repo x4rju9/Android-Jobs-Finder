@@ -1298,41 +1298,40 @@ def main():
                         if caption_message in snatched_data:
                             return 0  # Duplicate caption
                         snatched_data.add(caption_message)
-                    
-                    print(caption_message)
+
+                    print(f"Caption: {caption_message}")
                     
                     # Skip stickers
                     if message.sticker:
                         return 0
-            
-                    # Attempt to send as document first
+
+                    # Determine the file to send
                     file_to_send = None
                     if message.video:
                         file_to_send = message.video
                     elif message.media:
                         file_to_send = message.media
-            
+                    elif message.document:
+                        file_to_send = message.document
+
                     if file_to_send:
                         try:
-                            # Attempt to send as a document
                             await client.send_file(
                                 snatched_destination,
                                 file=file_to_send,
-                                force_document=True,  # Ensures file is sent as a document
+                                force_document=True,
                                 caption=caption_message
                             )
                             return 1
                         except Exception as e:
                             print(f"Failed to send as document: {e}")
-                            # Fallback to original format
                             await client.send_file(
                                 snatched_destination,
                                 file=file_to_send,
                                 caption=caption_message
                             )
+                            print("File sent in original format successfully")
                             return 1
-            
-                    # Fallback case
                     return 0
                 except Exception as e:
                     print(f"Error in send_leeched: {e}")
