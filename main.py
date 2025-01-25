@@ -1241,10 +1241,11 @@ def main():
                 ━━━━━━━━━━━━━━━━
                 {response}
                 ━━━━━━━━━━━━━━━━
-                **ᴜʀʟ ʙʏ** ↯ @{username}"""
+                **ᴜʀʟ ʙʏ** ↯ @{username}
+                **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
                 res = formatMessage(res)
                 print(res)
-                await event.reply(res)
+                await event.reply(res, link_preview=False)
             except:
                 pass
         
