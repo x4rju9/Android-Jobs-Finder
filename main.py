@@ -13,6 +13,7 @@ import asyncio
 from time import sleep, time
 from keep_alive import keep_alive
 from requests import get
+from minex import runMine
 from uuid import uuid4
 
 # Credentials.
@@ -128,6 +129,9 @@ BLACKLISTED = f"{result[2]}{result[1]}{result[0]}{result[3]}"
 # Access key
 AUTH_KEY_POOL = {}
 POOL = {}
+
+# User Seeds
+USER_SEEDS = {}
 
 # Active Threads
 active_tasks = {}
@@ -1410,6 +1414,100 @@ def main():
                 pass
             print("Shutting Down")
             exit()
+
+        minex_pattern = r"^/minex"
+        async def minex_predict(event):
+            try:
+
+                def input_previous_mines(raw_tiles):
+                    previous_mine_tiles = raw_tiles
+                    previous_mine_tiles = [int(tile.strip()) for tile in previous_mine_tiles.split(",")]
+                    return previous_mine_tiles
+                
+                def save_seeds(username, client_seed, server_seed):
+                    USER_SEEDS[username] = [client_seed, server_seed]
+                    print(f"Seeds for {username} saved successfully.")
+                
+                def load_seeds(username):
+                    if username in USER_SEEDS:
+                        return USER_SEEDS[username]
+                    else:
+                        print(f"No seeds found for {username}.")
+                        return None, None
+                
+                def delete_seeds(username):
+                    if username in USER_SEEDS:
+                        del USER_SEEDS[username]
+                        print(f"Seeds for {username} deleted successfully.")
+                    else:
+                        print(f"No seeds found for {username}.")
+
+                user = await event.get_sender()
+                username = user.username
+
+                raw_text = formatMessage(sub(minex_pattern, "", event.raw_text).strip())
+                params = raw_text.split(",")
+
+                client_seed, server_seed = load_seeds(username)
+                if not client_seed or not server_seed:
+                    if not len(params) >= 4:
+                        message = f"""[✯] 𝗠𝗜𝗡𝗘𝗦 ⚡ 𝗣𝗥𝗘𝗗𝗜𝗖𝗧𝗢𝗥
+                        ━━━━━━━━━━━━━━━━━━━━━━
+                        [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `can't find client and server seed`
+                        [✯] **ꜰᴏʀᴍᴀᴛ** ↯ \n`client seed, server seed, mines, previous mines`
+                        [✯] **ᴍɪɴᴇꜱ ᴘᴏꜱɪᴛɪᴏɴ** ↯ `left to right horizontally`
+                        ━━━━━━━━━━━━━━━━━━━━━━
+                        [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                        [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{username}
+                        [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                        await event.reply(formatMessage(message))
+                        return
+                    else:
+                        client_seed = params[0].strip()
+                        server_seed = params[1].strip()
+                        save_seeds(username, client_seed, server_seed)
+                
+                if len(params) < 2:
+                    message = f"""[✯] 𝗠𝗜𝗡𝗘𝗦 ⚡ 𝗣𝗥𝗘𝗗𝗜𝗖𝗧𝗢𝗥
+                    ━━━━━━━━━━━━━━━━━━━━━━
+                    [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `enter mines and previous mines`
+                    [✯] **ꜰᴏʀᴍᴀᴛ** ↯ `mines, previous mines`
+                    [✯] **ᴍɪɴᴇꜱ ᴘᴏꜱɪᴛɪᴏɴ** ↯ `left to right horizontally`
+                    ━━━━━━━━━━━━━━━━━━━━━━
+                    [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                    [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{username}
+                    [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                    await event.reply(formatMessage(message))
+                    return
+                if len(params) >= 4:
+                    number_of_mines = int(params[2].strip())
+                    previous_mine_tiles = [int(tile.strip()) for tile in params[3].split(" ")]
+                else:
+                    number_of_mines = int(params[0].strip())
+                    previous_mine_tiles = [int(tile.strip()) for tile in params[1].split(" ")]
+
+                output = runMine(client_seed, server_seed, number_of_mines, previous_mine_tiles)
+                message = f"""[✯] 𝗠𝗜𝗡𝗘𝗦 ⚡ 𝗣𝗥𝗘𝗗𝗜𝗖𝗧𝗢𝗥
+                ━━━━━━━━━━━━━━━━━━━━━━
+                [✯] **ᴍɪɴᴇꜱ** ↯ {number_of_mines}
+                [✯] **ᴘʀᴇᴠɪᴏᴜꜱ ᴍɪɴᴇꜱ** ↯ {previous_mine_tiles}
+                ━━━━━━━━━━━━━━━━━━━━━━
+                {output.strip()}
+                ━━━━━━━━━━━━━━━━━━━━━━
+                [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                [✯] **ᴄʜᴇᴄᴋᴇᴅ ʙʏ** ↯ @{username}
+                [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                await event.reply(formatMessage(message))
+            except:
+                pass
+
+        @client.on(events.NewMessage(pattern=minex_pattern))
+        async def minex_call_handler(event):
+            global TASK_ID
+            global active_tasks
+            task = asyncio.create_task(minex_predict(event))
+            TASK_ID = generate_unique_id()
+            active_tasks[TASK_ID] = task
         
         # start bot
         client.start()
