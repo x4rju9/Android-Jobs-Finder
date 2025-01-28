@@ -1263,59 +1263,54 @@ def main():
 
         snatch_pattern = r"^/snatch"
         async def snatch_media(event):
+
             message = sub(snatch_pattern, "", event.raw_text).strip()
-            args = message.split(",")
-            params = {}
-        
-            def add_param(key, value):
-                global params
-                params[key] = value.strip()
-        
-            for arg in args:
-                temp = arg.strip().split(" ")
-                if len(temp) == 2:
-                    if temp[0] == "s":
-                        add_param("source", temp[1])
-                    elif temp[0] == "d":
-                        add_param("destination", temp[1])
-                    elif temp[0] == "c":
-                        add_param("caption", temp[1])
-                    elif temp[0] == "i":
-                        add_param("index", temp[1])
-                    elif temp[0] == "t":
-                        add_param("time", temp[1])
-        
-            if "source" not in params or "destination" not in params:
-                print("Source or Destination missing, command will not be executed.")
+            message = message.split(" ")
+            caption_category = ""
+            shouldSkipMessages = False
+            skip_message_id = 0
+            if len(message) >= 4:
+                caption_category = message[3]
+            
+            if len(message) >= 3:
+                shouldSkipMessages = True
+                try:
+                    skip_message_id = int(message[2])
+                except:
+                    shouldSkipMessages = False
+                    pass
+            elif not len(message) >= 2:
                 return
             
-            snatched_source = params.get("source")
-            snatched_destination = params.get("destination")
-            caption_category = params.get("caption", "")
-            skip_message_id = int(params.get("index", 0)) if "index" in params else 0
-            delay_time = int(params.get("time", 1)) if "time" in params else 1  # Time is now used to set delay
-        
-            if skip_message_id > 0:
+            snatched_source = int(message[0]) if "-" in message[0] else message[0]
+            snatched_destination = int(message[1]) if "-" in message[1] else message[1]
+            if shouldSkipMessages:
                 await client.send_message(snatched_destination, f"Started Snatching !!\nFrom: {snatched_source}\nTo: {snatched_destination}\nSkip count: {skip_message_id}\nTask id: `{TASK_ID}`")
             else:
                 await client.send_message(snatched_destination, f"Started Snatching !!\nFrom: {snatched_source}\nTo: {snatched_destination}\nTask id: `{TASK_ID}`")
-        
+
             snatched_count = 0
             snatched_data = set()
-        
+            
             async def send_leeched(message):
                 try:
+                    # Default caption
                     caption_message = f"{snatched_count + 1}: Untitled {caption_category}"
-        
+                    
+                    # Handle message text
                     if message.text:
                         caption_message = message.text
                         if caption_message in snatched_data:
-                            return 0
+                            return 0  # Duplicate caption
                         snatched_data.add(caption_message)
-        
+
+                    print(f"Caption: {caption_message}")
+                    
+                    # Skip stickers
                     if message.sticker:
                         return 0
-        
+
+                    # Determine the file to send
                     file_to_send = None
                     if message.video:
                         file_to_send = message.video
@@ -1323,7 +1318,7 @@ def main():
                         file_to_send = message.media
                     elif message.document:
                         file_to_send = message.document
-        
+
                     if file_to_send:
                         try:
                             await client.send_file(
@@ -1342,20 +1337,21 @@ def main():
                             )
                             print("File sent in original format successfully")
                             return 1
+                    return 0
                 except Exception as e:
                     print(f"Error in send_leeched: {e}")
                     return 0
-        
+            
             try:
-                async for message in client.iter_messages(snatched_source, reverse=True):
+                async for message in client.iter_messages(snatched_source, reverse = True):
                     try:
-                        if skip_message_id > 0:
+                        if shouldSkipMessages:
                             if message.id <= skip_message_id:
                                 print(f"Skipped forwarding message ID {message.id}")
                                 continue
                         print(f"forwarding message ID {message.id}\nCurrent Snach Count: {snatched_count + 1}")
                         snatched_count += await send_leeched(message)
-                        await asyncio.sleep(delay_time)
+                        await asyncio.sleep(1)
                         if asyncio.current_task().cancelled():
                             print("Task has been cancelled.")
                             break
@@ -1364,7 +1360,7 @@ def main():
                         print(f"Successfully Snached: {snatched_count}")
                         for duration in range(1, e.seconds + 10):
                             print(f"Flood wait for {e.seconds} seconds")
-                            await asyncio.sleep(delay_time)
+                            await asyncio.sleep(1)
                         snatched_count += await send_leeched(message)
                     except Exception as e:
                         print(f"Error forwarding message ID {message.id}: {e}\nCurrent Snach Count: {snatched_count}")
