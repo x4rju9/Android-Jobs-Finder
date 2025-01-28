@@ -1351,7 +1351,7 @@ def main():
                                 continue
                         print(f"forwarding message ID {message.id}\nCurrent Snach Count: {snatched_count + 1}")
                         snatched_count += await send_leeched(message)
-                        await asyncio.sleep(1)
+                        await asyncio.sleep(15)
                         if asyncio.current_task().cancelled():
                             print("Task has been cancelled.")
                             break
@@ -1360,7 +1360,7 @@ def main():
                         print(f"Successfully Snached: {snatched_count}")
                         for duration in range(1, e.seconds + 10):
                             print(f"Flood wait for {e.seconds} seconds")
-                            await asyncio.sleep(1)
+                            await asyncio.sleep(15)
                         snatched_count += await send_leeched(message)
                     except Exception as e:
                         print(f"Error forwarding message ID {message.id}: {e}\nCurrent Snach Count: {snatched_count}")
