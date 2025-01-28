@@ -1293,7 +1293,7 @@ def main():
             snatched_destination = params.get("destination")
             caption_category = params.get("caption", "")
             skip_message_id = int(params.get("index", 0)) if "index" in params else 0
-            delay_time = int(params.get("time", 0)) if "time" in params else 1
+            delay_time = int(params.get("time", 1)) if "time" in params else 1  # Time is now used to set delay
         
             if skip_message_id > 0:
                 await client.send_message(snatched_destination, f"Started Snatching !!\nFrom: {snatched_source}\nTo: {snatched_destination}\nSkip count: {skip_message_id}\nTask id: `{TASK_ID}`")
@@ -1355,7 +1355,7 @@ def main():
                                 continue
                         print(f"forwarding message ID {message.id}\nCurrent Snach Count: {snatched_count + 1}")
                         snatched_count += await send_leeched(message)
-                        await asyncio.sleep(1)
+                        await asyncio.sleep(delay_time)
                         if asyncio.current_task().cancelled():
                             print("Task has been cancelled.")
                             break
@@ -1364,7 +1364,7 @@ def main():
                         print(f"Successfully Snached: {snatched_count}")
                         for duration in range(1, e.seconds + 10):
                             print(f"Flood wait for {e.seconds} seconds")
-                            await asyncio.sleep(1)
+                            await asyncio.sleep(delay_time)
                         snatched_count += await send_leeched(message)
                     except Exception as e:
                         print(f"Error forwarding message ID {message.id}: {e}\nCurrent Snach Count: {snatched_count}")
