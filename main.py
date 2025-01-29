@@ -1265,25 +1265,54 @@ def main():
         async def snatch_media(event):
 
             message = sub(snatch_pattern, "", event.raw_text).strip()
-            message = message.split(" ")
-            caption_category = ""
+            # /snatch s 348374837, d 837438473, c caption, i 9, t 30
+            args = message.split(",")
+
+            params = {}
+
+            def add_params(key, value):
+                params[key] = value.strip()
+
+            for arg in args:
+                arg = arg.strip().split(" ")
+                if len(arg) == 2:
+                    if arg[0].lower() == "s":
+                        add_params("source", arg[1])
+                    if arg[0].lower() == "d":
+                        add_params("destination", arg[1])
+                    if arg[0].lower() == "c":
+                        add_params("caption", arg[1])
+                    if arg[0].lower() == "i":
+                        add_params("index", arg[1])
+                    if arg[0].lower() == "t":
+                        add_params("time", arg[1])
+            
+            if not "source" in params or not "destination" in params:
+                event.reply("Source or Destination missing command will not be executed.")
+                print("Source or Destination missing command will not be executed.")
+                return
+
+                
+            caption_category = params.get("caption", "") if "caption" in params else ""
+
             shouldSkipMessages = False
             skip_message_id = 0
-            if len(message) >= 4:
-                caption_category = message[3]
+
+            delay_interval = int(params.get("time", 1)) if "time" in params else 1
             
-            if len(message) >= 3:
+            if "index" in params:
                 shouldSkipMessages = True
                 try:
-                    skip_message_id = int(message[2])
+                    skip_message_id = int(params.get("index", 0))
                 except:
                     shouldSkipMessages = False
                     pass
-            elif not len(message) >= 2:
-                return
+            if skip_message_id == 0:
+                shouldSkipMessages = False
             
-            snatched_source = int(message[0]) if "-" in message[0] else message[0]
-            snatched_destination = int(message[1]) if "-" in message[1] else message[1]
+            snatched_source = int(params.get("source")) if "-" in params.get("source") else params.get("source")
+            snatched_destination = int(params.get("destination")) if "-" in params.get("destination") else params.get("destination")
+
             if shouldSkipMessages:
                 await client.send_message(snatched_destination, f"Started Snatching !!\nFrom: {snatched_source}\nTo: {snatched_destination}\nSkip count: {skip_message_id}\nTask id: `{TASK_ID}`")
             else:
@@ -1351,7 +1380,7 @@ def main():
                                 continue
                         print(f"forwarding message ID {message.id}\nCurrent Snach Count: {snatched_count + 1}")
                         snatched_count += await send_leeched(message)
-                        await asyncio.sleep(15)
+                        await asyncio.sleep(delay_interval)
                         if asyncio.current_task().cancelled():
                             print("Task has been cancelled.")
                             break
@@ -1360,7 +1389,7 @@ def main():
                         print(f"Successfully Snached: {snatched_count}")
                         for duration in range(1, e.seconds + 10):
                             print(f"Flood wait for {e.seconds} seconds")
-                            await asyncio.sleep(15)
+                            await asyncio.sleep(delay_interval)
                         snatched_count += await send_leeched(message)
                     except Exception as e:
                         print(f"Error forwarding message ID {message.id}: {e}\nCurrent Snach Count: {snatched_count}")
