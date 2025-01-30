@@ -1295,20 +1295,10 @@ def main():
                 
             caption_category = params.get("caption", "") if "caption" in params else ""
 
-            shouldSkipMessages = False
-            skip_message_id = 0
+            skip_message_id = int(params.get("index", 0)) if "index" in params else 0
+            shouldSkipMessages = False if skip_message_id == 0 else True
 
             delay_interval = int(params.get("time", 1)) if "time" in params else 1
-            
-            if "index" in params:
-                shouldSkipMessages = True
-                try:
-                    skip_message_id = int(params.get("index", 0))
-                except:
-                    shouldSkipMessages = False
-                    pass
-            if skip_message_id == 0:
-                shouldSkipMessages = False
             
             snatched_source = int(params.get("source")) if "-" in params.get("source") else params.get("source")
             snatched_destination = int(params.get("destination")) if "-" in params.get("destination") else params.get("destination")
@@ -1323,6 +1313,7 @@ def main():
             
             async def send_leeched(message):
                 try:
+                    global caption_category
                     # Default caption
                     caption_message = f"{snatched_count + 1}: Untitled {caption_category}"
                     
