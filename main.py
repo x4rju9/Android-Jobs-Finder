@@ -1268,24 +1268,30 @@ def main():
             # /snatch s 348374837, d 837438473, c caption, i 9, t 30
             args = message.split(",")
 
+            print("Args", args)
+
             params = {}
 
             def add_params(key, value):
                 params[key] = value.strip()
 
             for arg in args:
-                arg = arg.strip().split(" ")
+                arg = arg.strip().split(" ", 1)
                 if len(arg) == 2:
-                    if arg[0].lower() == "s":
+                    if "s" in arg[0].lower():
                         add_params("source", arg[1])
-                    if arg[0].lower() == "d":
+                    if "d" in arg[0].lower():
                         add_params("destination", arg[1])
-                    if arg[0].lower() == "c":
+                    if "c" in arg[0].lower():
                         add_params("caption", arg[1])
-                    if arg[0].lower() == "i":
+                    if "i" in arg[0].lower():
                         add_params("index", arg[1])
-                    if arg[0].lower() == "t":
+                    if "t" in arg[0].lower():
                         add_params("time", arg[1])
+            
+            print("Params", params)
+
+            return
             
             if not "source" in params or not "destination" in params:
                 event.reply("Source or Destination missing command will not be executed.")
@@ -1313,7 +1319,6 @@ def main():
             
             async def send_leeched(message):
                 try:
-                    global caption_category
                     # Default caption
                     caption_message = f"{snatched_count + 1}: Untitled {caption_category}"
                     
