@@ -1268,8 +1268,6 @@ def main():
             # /snatch s 348374837, d 837438473, c caption, i 9, t 30
             args = message.split(",")
 
-            print("Args", args)
-
             params = {}
 
             def add_params(key, value):
@@ -1289,15 +1287,10 @@ def main():
                     if "t" in arg[0].lower():
                         add_params("time", arg[1])
             
-            print("Params", params)
-
-            return
-            
             if not "source" in params or not "destination" in params:
                 event.reply("Source or Destination missing command will not be executed.")
                 print("Source or Destination missing command will not be executed.")
                 return
-
                 
             caption_category = params.get("caption", "") if "caption" in params else ""
 
