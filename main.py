@@ -260,7 +260,6 @@ def create_response(message):
 
     return text_1
 
-
 def main():
     with TelegramClient(StringSession(ss), api_id, api_hash) as client:
         
@@ -1117,30 +1116,30 @@ def main():
                         await event.reply(res)
                         return
                 
-                shouldReturn = False
-                if event.is_private:
-                    if not user in premium_users and not haveKey:
-                        shouldReturn = True
-                elif event.is_group:
-                    if not user in premium_users and not haveKey:
-                        if event.chat_id in authorized_chats:
-                            shouldReturn = False
-                        else:
-                            shouldReturn = True
+                # shouldReturn = False
+                # if event.is_private:
+                #     if not user in premium_users and not haveKey:
+                #         shouldReturn = True
+                # elif event.is_group:
+                #     if not user in premium_users and not haveKey:
+                #         if event.chat_id in authorized_chats:
+                #             shouldReturn = False
+                #         else:
+                #             shouldReturn = True
                     
-                if shouldReturn:
-                    res = f"""
-                    [✯] 𝗦𝗠𝗦 ⚡ 𝗕𝗢𝗠𝗕𝗘𝗥 
-                    ━━━━━━━━━━━━━━━━━━━━━━━━
-                    [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ᴀᴄᴄᴇꜱꜱ ᴅᴇɴɪᴇᴅ ‼`
-                    [✯] **ᴍᴇꜱꜱᴀɢᴇ** ↯ `ɴᴏ ᴀᴄᴄᴇꜱꜱ ᴋᴇʏ ꜰᴏᴜɴᴅ ‼`
-                    ━━━━━━━━━━━━━━━━━━━━━━━━
-                    [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
-                    [✯] **ʙᴏᴍʙᴇᴅ ʙʏ** ↯ @{user} [{membership}]
-                    [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
-                    res = formatMessage(res)
-                    await event.reply(res)
-                    return
+                # if shouldReturn:
+                #     res = f"""
+                #     [✯] 𝗦𝗠𝗦 ⚡ 𝗕𝗢𝗠𝗕𝗘𝗥 
+                #     ━━━━━━━━━━━━━━━━━━━━━━━━
+                #     [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ᴀᴄᴄᴇꜱꜱ ᴅᴇɴɪᴇᴅ ‼`
+                #     [✯] **ᴍᴇꜱꜱᴀɢᴇ** ↯ `ɴᴏ ᴀᴄᴄᴇꜱꜱ ᴋᴇʏ ꜰᴏᴜɴᴅ ‼`
+                #     ━━━━━━━━━━━━━━━━━━━━━━━━
+                #     [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                #     [✯] **ʙᴏᴍʙᴇᴅ ʙʏ** ↯ @{user} [{membership}]
+                #     [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                #     res = formatMessage(res)
+                #     await event.reply(res)
+                #     return
                     
                 if not POOL.get(user) == None:
                     cooldown = time() - POOL.get(user)
