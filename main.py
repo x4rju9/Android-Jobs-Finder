@@ -1101,14 +1101,14 @@ def main():
                     membership = "𝙿𝚁𝙴𝙼𝙸𝚄𝙼"
                 elif haveKey:
                     membership = "ᴀᴜᴛʜ"
-                number = sub(r"^/sbomb", "", event.raw_text).strip()
+                number = sub(r"^/bomb", "", event.raw_text).strip()
                 if number == "" or len(number) != 10 or number == BLACKLISTED:
                     if not event.reply_to:
                         res = f"""
                         [✯] 𝗦𝗠𝗦 ⚡ 𝗕𝗢𝗠𝗕𝗘𝗥
                         ━━━━━━━━━━━━━━━━━━━━━━━━
                         [✯] **ʀᴇꜱᴘᴏɴꜱᴇ** ↯ `ɴᴏ ɴᴜᴍʙᴇʀ ꜰᴏᴜɴᴅ ‼`
-                        [✯] **ꜰᴏʀᴍᴀᴛ** ↯ `/ꜱʙᴏᴍʙ 1234567890 ‼`
+                        [✯] **ꜰᴏʀᴍᴀᴛ** ↯ `/ʙᴏᴍʙ 1234567890 ‼`
                         ━━━━━━━━━━━━━━━━━━━━━━━━
                         [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
                         [✯] **ʙᴏᴍʙᴇᴅ ʙʏ** ↯ @{user} [{membership}]
@@ -1194,7 +1194,7 @@ def main():
             except:
                 pass
         
-        sb_pattern = r"^/sbomb"
+        sb_pattern = r"^/bomb"
         @client.on(events.NewMessage(pattern=sb_pattern))
         async def sms_bomber_handler(event):
             global TASK_ID
