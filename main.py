@@ -102,15 +102,12 @@ def filter_env(list):
     final = []
     for x in list:
         x = x.strip()
-        if "-" in x:
-            final.append(int(x))
+        if "@" in x:
+            final.append(x.replace("@", ""))
         elif "" == x:
             pass
         else:
-            try:
-                final.append(int(x))
-            except:
-                final.append(x)
+            final.append(int(x))
     return final
 
 # Filter Jobs Channels
