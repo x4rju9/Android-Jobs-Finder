@@ -1547,7 +1547,6 @@ def main():
 
             # Check for replies or mentions in groups
             elif event.is_group:
-
                 if event.chat_id in EXCLUDED_CHATS:
                     return
                 
