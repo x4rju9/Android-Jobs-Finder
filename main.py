@@ -138,8 +138,9 @@ USER_SEEDS = {}
 active_tasks = {}
 TASK_ID = "NULL"
 
-# Message Map
+# DM Manager
 message_map = {}
+EXCLUDED_CHATS = filter_env(os.environ.get("EXCLUDED_CHATS_DM").split(","))
 
 # Gemini Access Key
 """
@@ -1532,8 +1533,11 @@ def main():
         
         async def dm_handler(event):
             global message_map
+            global EXCLUDED_CHATS
             dump_channel = -1002514065946
-            probhited_user_list = [777000, 5779600068, 687423395]
+
+            if event.chat_id in EXCLUDED_CHATS:
+                return
 
             # Check for direct messages
             if event.is_private:
