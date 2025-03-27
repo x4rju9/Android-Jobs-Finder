@@ -15,6 +15,7 @@ from keep_alive import keep_alive
 from requests import get
 from minex import runMine
 from uuid import uuid4
+import re
 
 # Credentials.
 api_id = int(os.environ.get("API_ID"))
@@ -136,6 +137,9 @@ USER_SEEDS = {}
 # Active Threads
 active_tasks = {}
 TASK_ID = "NULL"
+
+# Message Map
+message_map = {}
 
 # Gemini Access Key
 """
@@ -263,7 +267,7 @@ def create_response(message):
 def main():
     with TelegramClient(StringSession(ss), api_id, api_hash) as client:
         
-        client.send_message("me", f"Started Bot Successfully !!")
+        client.send_message(-1002514065946, f"Started Bot Successfully !!")
 
         @client.on(events.NewMessage(chats=fuel_jobs))
         async def find_jobs(event):
@@ -1525,6 +1529,110 @@ def main():
             task = asyncio.create_task(minex_predict(event))
             TASK_ID = generate_unique_id()
             active_tasks[TASK_ID] = task
+        
+        async def dm_handler(event):
+            global message_map
+            dump_channel = -1002514065946
+
+            # Check for direct messages
+            if event.is_private:
+                forwarded = await event.forward_to(dump_channel)
+                message_map[forwarded.id] = (event.chat_id, event.id)
+                return
+
+            # Check for replies or mentions in groups
+            elif event.is_group:
+                mes = event.raw_text
+
+                # Default flags
+                mention_found = False
+                is_replied_to_me = False
+
+                # Mention check
+                if "@xCatBurglar" in mes:
+                    mention_found = True
+                
+                # Replied message check
+                replied_message = await event.get_reply_message()
+                if replied_message:
+                    replied_sender = await replied_message.get_sender()
+                    my_username = replied_sender.username if replied_sender.username else "nousername"
+                    if my_username == "xCatBurglar":
+                        is_replied_to_me = True
+
+                # If no mention, reply, or reply-to-me detected
+                if not (mention_found or is_replied_to_me):
+                    print("Nothing Found")
+                    return
+                
+                # Sender check
+                sender = await event.get_sender()
+                username = sender.username if sender.username else "nousername"
+
+                if username == "x4rju9":
+                    message = event.raw_text
+                    replied = await event.get_reply_message()
+                    replied_sender = await replied.get_sender()
+                    replied_username = f"@{replied_sender.username}" if replied_sender.username else replied_sender.first_name
+
+                    if replied and replied.id in message_map:
+                        print("Replying to user.")
+                        original_chat_id, original_message_id = message_map[replied.id]
+                        template = f"""[✯] 𝗗𝗠 ⚡ 𝗠𝗔𝗡𝗔𝗚𝗘𝗥
+                                       ━━━━━━━━━━━━━━━━━━━━━━
+                                       {message}
+                                       ━━━━━━━━━━━━━━━━━━━━━━
+                                       [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                                       [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                        await client.send_message(original_chat_id, formatMessage(template), reply_to=original_message_id)
+                    else:
+                        print("Sender: @x4rju9 but no replied message found.")
+                else:
+                    forwarded = await event.forward_to(dump_channel)
+                    message_map[forwarded.id] = (event.chat_id, event.id)
+        
+        @client.on(events.NewMessage())
+        async def dm_manager_handler(event):
+            global TASK_ID
+            global active_tasks
+            task = asyncio.create_task(dm_handler(event))
+            TASK_ID = generate_unique_id()
+            active_tasks[TASK_ID] = task
+        
+        def extract_login_code(text):
+            codes = re.findall(r'\b\d{5,6}\b', text)
+            return codes[0] if codes else None
+
+        @client.on(events.NewMessage(chats=[777000]))
+        async def fetch_login_codes(event):
+            print(f"Triggered: 777000\n{event.text}")
+            try:
+                code = extract_login_code(event.text)
+                template = f"""[✯] 𝗟𝗢𝗚𝗜𝗡 ⚡ 𝗠𝗔𝗡𝗔𝗚𝗘𝗥
+                               ━━━━━━━━━━━━━━━
+                               [✯] **ᴄᴏᴅᴇ** ↯ `{code}`
+                               ━━━━━━━━━━━━━━━
+                               [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                               [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                await client.send_message("x4rju9", formatMessage(template))
+            except Exception as e:
+                print(e)
+        
+        number_pattern = r"^/number"
+        @client.on(events.NewMessage(pattern=number_pattern))
+        async def fetch_mobile_number(event):
+            try:
+                user = await event.get_sender()
+                user = user.username
+
+                if not user == "x4rju9":
+                    await event.reply("ᴡʜᴏ ᴅᴏ ʏᴏᴜ ᴛʜɪɴᴋ ʏᴏᴜ'ʀᴇ ‼")
+                    return
+                
+                await client.send_message("x4rju9", "+447443229387")
+                
+            except Exception as e:
+                print(e)
         
         # start bot
         client.start()
