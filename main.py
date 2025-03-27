@@ -1536,13 +1536,10 @@ def main():
             global EXCLUDED_CHATS
             dump_channel = -1002514065946
 
-            if event.chat_id in EXCLUDED_CHATS:
-                return
-
             # Check for direct messages
             if event.is_private:
                 user_id = event.sender_id
-                if user_id in probhited_user_list:
+                if user_id in EXCLUDED_CHATS:
                     return
                 forwarded = await event.forward_to(dump_channel)
                 message_map[forwarded.id] = (event.chat_id, event.id)
@@ -1551,8 +1548,7 @@ def main():
             # Check for replies or mentions in groups
             elif event.is_group:
 
-                user_id = event.sender_id
-                if user_id in probhited_user_list:
+                if event.chat_id in EXCLUDED_CHATS:
                     return
                 
                 mes = event.raw_text
