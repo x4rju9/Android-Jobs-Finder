@@ -1533,9 +1533,13 @@ def main():
         async def dm_handler(event):
             global message_map
             dump_channel = -1002514065946
+            probhited_user_list = [777000, 5779600068, 687423395]
 
             # Check for direct messages
             if event.is_private:
+                user_id = event.sender_id
+                if user_id in probhited_user_list:
+                    return
                 forwarded = await event.forward_to(dump_channel)
                 message_map[forwarded.id] = (event.chat_id, event.id)
                 return
