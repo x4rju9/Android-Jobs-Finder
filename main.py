@@ -107,7 +107,10 @@ def filter_env(list):
         elif "" == x:
             pass
         else:
-            final.append(x)
+            try:
+                final.append(int(x))
+            except:
+                final.append(x)
     return final
 
 # Filter Jobs Channels
