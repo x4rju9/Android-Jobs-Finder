@@ -1546,6 +1546,11 @@ def main():
 
             # Check for replies or mentions in groups
             elif event.is_group:
+
+                user_id = event.sender_id
+                if user_id in probhited_user_list:
+                    return
+                
                 mes = event.raw_text
 
                 # Default flags
