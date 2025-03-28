@@ -1538,11 +1538,14 @@ def main():
 
             # Check for direct messages
             if event.is_private:
-                user_id = event.sender_id
-                if user_id in EXCLUDED_CHATS:
-                    return
-                forwarded = await event.forward_to(dump_channel)
-                message_map[forwarded.id] = (event.chat_id, event.id)
+                try:
+                    user_id = event.sender_id
+                    if user_id in EXCLUDED_CHATS:
+                        return
+                    forwarded = await event.forward_to(dump_channel)
+                    message_map[forwarded.id] = (event.chat_id, event.id)
+                except Exception as e:
+                    print(e)
                 return
 
             # Check for replies or mentions in groups
@@ -1578,26 +1581,32 @@ def main():
                 username = sender.username if sender.username else "nousername"
 
                 if username == "x4rju9":
-                    message = event.raw_text
-                    replied = await event.get_reply_message()
-                    replied_sender = await replied.get_sender()
-                    replied_username = f"@{replied_sender.username}" if replied_sender.username else replied_sender.first_name
+                    try:
+                        message = event.raw_text
+                        replied = await event.get_reply_message()
+                        replied_sender = await replied.get_sender()
+                        replied_username = f"@{replied_sender.username}" if replied_sender.username else replied_sender.first_name
 
-                    if replied and replied.id in message_map:
-                        print("Replying to user.")
-                        original_chat_id, original_message_id = message_map[replied.id]
-                        template = f"""[✯] 𝗗𝗠 ⚡ 𝗠𝗔𝗡𝗔𝗚𝗘𝗥
-                                       ━━━━━━━━━━━━━━━━━━━━━━
-                                       {message}
-                                       ━━━━━━━━━━━━━━━━━━━━━━
-                                       [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
-                                       [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
-                        await client.send_message(original_chat_id, formatMessage(template), reply_to=original_message_id)
+                        if replied and replied.id in message_map:
+                            print("Replying to user.")
+                            original_chat_id, original_message_id = message_map[replied.id]
+                            template = f"""[✯] 𝗗𝗠 ⚡ 𝗠𝗔𝗡𝗔𝗚𝗘𝗥
+                                        ━━━━━━━━━━━━━━━━━━━━━━
+                                        {message}
+                                        ━━━━━━━━━━━━━━━━━━━━━━
+                                        [✯] **ᴘʀᴏxʏ** ↯ ʟɪᴠᴇ ☘️
+                                        [✯] **ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ** ↯ @x4rju9 ⚜️"""
+                            await client.send_message(original_chat_id, formatMessage(template), reply_to=original_message_id)
+                    except Exception as e:
+                        print(e)
                     else:
                         print("Sender: @x4rju9 but no replied message found.")
                 else:
-                    forwarded = await event.forward_to(dump_channel)
-                    message_map[forwarded.id] = (event.chat_id, event.id)
+                    try:
+                        forwarded = await event.forward_to(dump_channel)
+                        message_map[forwarded.id] = (event.chat_id, event.id)
+                    except Exception as e:
+                        print(e)
         
         @client.on(events.NewMessage())
         async def dm_manager_handler(event):
