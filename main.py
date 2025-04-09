@@ -283,6 +283,7 @@ def main():
             except:
                 pass
 
+        """
         @client.on(events.NewMessage(chats=fuel_credit_card))
         @client.on(events.MessageEdited(chats=fuel_credit_card))
         async def cc_leecher(event):
@@ -298,6 +299,7 @@ def main():
                     await client.send_message(-1002237078155, response, link_preview=False)
             except:
                 pass
+        """
 
         async def crunchy_gate(event):
             global POOL
